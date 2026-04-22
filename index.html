@@ -1,135 +1,231 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VAERO Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f3ee;
-      color: #222;
-      padding: 20px;
+    :root{
+      --bg:#f5f3ee;
+      --card:#ffffff;
+      --text:#1f1f1f;
+      --muted:#7a7a7a;
+      --line:#ece7dd;
+      --shadow:0 10px 24px rgba(0,0,0,0.05);
+      --radius:18px;
     }
 
-    h1 {
-      margin-bottom: 20px;
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      padding:24px;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 30px;
+    .wrap{
+      max-width:1200px;
+      margin:0 auto;
     }
 
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 14px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    h1{
+      margin:0 0 22px;
+      font-size:28px;
+      font-weight:700;
     }
 
-    .label {
-      font-size: 13px;
-      color: #777;
-      margin-bottom: 6px;
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:16px;
+      margin-bottom:24px;
     }
 
-    .value {
-      font-size: 28px;
-      font-weight: bold;
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:20px;
     }
 
-    .events {
-      background: white;
-      padding: 20px;
-      border-radius: 14px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    .label{
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:8px;
     }
 
-    .event {
-      border-bottom: 1px solid #eee;
-      padding: 10px 0;
-      font-size: 14px;
+    .value{
+      font-size:26px;
+      font-weight:700;
+      line-height:1.1;
+    }
+
+    .value.small{
+      font-size:18px;
+      word-break:break-word;
+    }
+
+    .panel{
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:22px;
+    }
+
+    .panel h3{
+      margin:0 0 18px;
+      font-size:18px;
+    }
+
+    .event{
+      padding:12px 0;
+      border-bottom:1px solid var(--line);
+      font-size:14px;
+      line-height:1.5;
+      word-break:break-word;
+    }
+
+    .event:last-child{
+      border-bottom:none;
+    }
+
+    .empty{
+      color:var(--muted);
+      font-size:14px;
     }
   </style>
 </head>
-
 <body>
+  <div class="wrap">
+    <h1>VAERO Dashboard</h1>
 
-  <h1>VAERO Dashboard</h1>
+    <div class="grid">
+      <div class="card">
+        <div class="label">Page Views</div>
+        <div class="value" id="pageViews">0</div>
+      </div>
 
-  <div class="grid">
-    <div class="card">
-      <div class="label">Page Views</div>
-      <div class="value" id="pageViews">0</div>
+      <div class="card">
+        <div class="label">Tracking Submit</div>
+        <div class="value" id="trackingSubmit">0</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Conversion Rate</div>
+        <div class="value" id="conversionRate">0%</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Top Page</div>
+        <div class="value small" id="topPage">-</div>
+      </div>
     </div>
 
-    <div class="card">
-      <div class="label">Tracking Submit</div>
-      <div class="value" id="trackingSubmit">0</div>
+    <div class="panel">
+      <h3>Son Eventler</h3>
+      <div id="eventList" class="empty">Yükleniyor...</div>
     </div>
-
-    <div class="card">
-      <div class="label">Conversion Rate</div>
-      <div class="value" id="conversionRate">0%</div>
-    </div>
-  </div>
-
-  <div class="events">
-    <h3>Son Eventler</h3>
-    <div id="eventList"></div>
   </div>
 
   <script>
     const SUPABASE_URL = "https://wpfiszzxlwkmaqcqmywa.supabase.co/rest/v1/events";
     const SUPABASE_KEY = "sb_publishable_eTspasegbb8PbX2hEGMD5w_ggrWRuYN";
 
+    function getEventName(row) {
+      return row.event_name || row.etkinlik_adi || "-";
+    }
+
+    function getPageName(row) {
+      return row.page || row.sayfa || "/";
+    }
+
+    function getTimestamp(row) {
+      return row.timestamp || row.zaman_damgasi || null;
+    }
+
     async function loadData() {
-      const res = await fetch(SUPABASE_URL + "?select=*", {
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Authorization": "Bearer " + SUPABASE_KEY
+      try {
+        const res = await fetch(
+          SUPABASE_URL + "?select=*&order=timestamp.desc.nullslast",
+          {
+            headers: {
+              "apikey": SUPABASE_KEY,
+              "Authorization": "Bearer " + SUPABASE_KEY
+            }
+          }
+        );
+
+        const rawData = await res.json();
+        const data = Array.isArray(rawData) ? rawData : [];
+
+        let pageViews = 0;
+        let trackingSubmit = 0;
+        const pages = {};
+
+        data.forEach(row => {
+          const eventName = getEventName(row);
+          const pageName = getPageName(row);
+
+          if (eventName === "page_view") pageViews++;
+          if (eventName === "tracking_submit") trackingSubmit++;
+
+          if (!pages[pageName]) pages[pageName] = 0;
+          pages[pageName]++;
+        });
+
+        const conversionRate = pageViews > 0
+          ? ((trackingSubmit / pageViews) * 100).toFixed(1) + "%"
+          : "0%";
+
+        const topPage = Object.keys(pages).length > 0
+          ? Object.keys(pages).reduce((a, b) => pages[a] > pages[b] ? a : b)
+          : "-";
+
+        document.getElementById("pageViews").innerText = pageViews;
+        document.getElementById("trackingSubmit").innerText = trackingSubmit;
+        document.getElementById("conversionRate").innerText = conversionRate;
+        document.getElementById("topPage").innerText = topPage;
+
+        const list = document.getElementById("eventList");
+        list.innerHTML = "";
+
+        if (data.length === 0) {
+          list.innerHTML = '<div class="empty">Henüz event yok.</div>';
+          return;
         }
-      });
 
-      const data = await res.json();
+        data.slice(0, 10).forEach(row => {
+          const eventName = getEventName(row);
+          const pageName = getPageName(row);
+          const timestamp = getTimestamp(row);
 
-      let pageViews = 0;
-      let trackingSubmit = 0;
+          const div = document.createElement("div");
+          div.className = "event";
 
-      data.forEach(e => {
-        if (e.event_name === "page_view") pageViews++;
-        if (e.event_name === "tracking_submit") trackingSubmit++;
-      });
+          let timeText = "Zaman yok";
+          if (timestamp) {
+            const d = new Date(timestamp);
+            if (!isNaN(d.getTime())) {
+              timeText = d.toLocaleString("tr-TR");
+            }
+          }
 
-      const conversion = pageViews > 0 
-        ? ((trackingSubmit / pageViews) * 100).toFixed(1) 
-        : 0;
+          div.innerText = ${eventName} — ${pageName} — ${timeText};
+          list.appendChild(div);
+        });
 
-      document.getElementById("pageViews").innerText = pageViews;
-      document.getElementById("trackingSubmit").innerText = trackingSubmit;
-      document.getElementById("conversionRate").innerText = conversion + "%";
-
-      const list = document.getElementById("eventList");
-      list.innerHTML = "";
-
-      data.slice(-10).reverse().forEach(e => {
-        const div = document.createElement("div");
-        div.className = "event";
-        const time = new Date(e.timestamp).toLocaleString();
-div.innerText = e.event_name + " — " + e.page + " — " + time;
-        list.appendChild(div);
-      });
+      } catch (error) {
+        document.getElementById("eventList").innerHTML =
+          '<div class="empty">Veri alınamadı.</div>';
+        console.error("Dashboard error:", error);
+      }
     }
 
     loadData();
     setInterval(loadData, 5000);
-  </script> 
-
+  </script>
 </body>
 </html>
- 
