@@ -1,231 +1,185 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VAERO Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VAERO Dashboard</title>
 
-  <style>
-    :root{
-      --bg:#f5f3ee;
-      --card:#ffffff;
-      --text:#1f1f1f;
-      --muted:#7a7a7a;
-      --line:#ece7dd;
-      --shadow:0 10px 24px rgba(0,0,0,0.05);
-      --radius:18px;
-    }
+<style>
+body{
+  font-family:Arial;
+  background:#f5f3ee;
+  padding:20px;
+}
 
-    *{box-sizing:border-box}
+h1{
+  margin-bottom:20px;
+}
 
-    body{
-      margin:0;
-      font-family:Arial,sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      padding:24px;
-    }
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:15px;
+  margin-bottom:20px;
+}
 
-    .wrap{
-      max-width:1200px;
-      margin:0 auto;
-    }
+.card{
+  background:white;
+  padding:15px;
+  border-radius:15px;
+}
 
-    h1{
-      margin:0 0 22px;
-      font-size:28px;
-      font-weight:700;
-    }
+.label{
+  color:#777;
+  font-size:13px;
+}
 
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:16px;
-      margin-bottom:24px;
-    }
+.value{
+  font-size:24px;
+  font-weight:bold;
+}
 
-    .card{
-      background:var(--card);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:20px;
-    }
+.panel{
+  background:white;
+  padding:20px;
+  border-radius:15px;
+}
 
-    .label{
-      font-size:13px;
-      color:var(--muted);
-      margin-bottom:8px;
-    }
-
-    .value{
-      font-size:26px;
-      font-weight:700;
-      line-height:1.1;
-    }
-
-    .value.small{
-      font-size:18px;
-      word-break:break-word;
-    }
-
-    .panel{
-      background:var(--card);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:22px;
-    }
-
-    .panel h3{
-      margin:0 0 18px;
-      font-size:18px;
-    }
-
-    .event{
-      padding:12px 0;
-      border-bottom:1px solid var(--line);
-      font-size:14px;
-      line-height:1.5;
-      word-break:break-word;
-    }
-
-    .event:last-child{
-      border-bottom:none;
-    }
-
-    .empty{
-      color:var(--muted);
-      font-size:14px;
-    }
-  </style>
+.event{
+  padding:10px 0;
+  border-bottom:1px solid #eee;
+  font-size:14px;
+}
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <h1>VAERO Dashboard</h1>
 
-    <div class="grid">
-      <div class="card">
-        <div class="label">Page Views</div>
-        <div class="value" id="pageViews">0</div>
-      </div>
+<h1>VAERO Dashboard</h1>
 
-      <div class="card">
-        <div class="label">Tracking Submit</div>
-        <div class="value" id="trackingSubmit">0</div>
-      </div>
-
-      <div class="card">
-        <div class="label">Conversion Rate</div>
-        <div class="value" id="conversionRate">0%</div>
-      </div>
-
-      <div class="card">
-        <div class="label">Top Page</div>
-        <div class="value small" id="topPage">-</div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <h3>Son Eventler</h3>
-      <div id="eventList" class="empty">Yükleniyor...</div>
-    </div>
+<div class="grid">
+  <div class="card">
+    <div class="label">Page Views</div>
+    <div class="value" id="pageViews">0</div>
   </div>
 
-  <script>
-    const SUPABASE_URL = "https://wpfiszzxlwkmaqcqmywa.supabase.co/rest/v1/events";
-    const SUPABASE_KEY = "sb_publishable_eTspasegbb8PbX2hEGMD5w_ggrWRuYN";
+  <div class="card">
+    <div class="label">Tracking Submit</div>
+    <div class="value" id="trackingSubmit">0</div>
+  </div>
 
-    function getEventName(row) {
-      return row.event_name || row.etkinlik_adi || "-";
-    }
+  <div class="card">
+    <div class="label">Conversion Rate</div>
+    <div class="value" id="conversionRate">0%</div>
+  </div>
 
-    function getPageName(row) {
-      return row.page || row.sayfa || "/";
-    }
+  <div class="card">
+    <div class="label">Top Page</div>
+    <div class="value" id="topPage">-</div>
+  </div>
+</div>
 
-    function getTimestamp(row) {
-      return row.timestamp || row.zaman_damgasi || null;
-    }
+<div class="panel">
+  <h3>Son Eventler</h3>
+  <div id="eventList">Yükleniyor...</div>
+</div>
 
-    async function loadData() {
-      try {
-        const res = await fetch(
-          SUPABASE_URL + "?select=*&order=timestamp.desc.nullslast",
-          {
-            headers: {
-              "apikey": SUPABASE_KEY,
-              "Authorization": "Bearer " + SUPABASE_KEY
-            }
-          }
-        );
+<script>
 
-        const rawData = await res.json();
-        const data = Array.isArray(rawData) ? rawData : [];
+const SUPABASE_URL = "https://wpfiszzxlwkmaqcqmywa.supabase.co/rest/v1/events";
+const SUPABASE_KEY = "sb_publishable_eTspasegbb8PbX2hEGMD5w_ggrWRuYN";
 
-        let pageViews = 0;
-        let trackingSubmit = 0;
-        const pages = {};
+async function loadData() {
 
-        data.forEach(row => {
-          const eventName = getEventName(row);
-          const pageName = getPageName(row);
+  try {
 
-          if (eventName === "page_view") pageViews++;
-          if (eventName === "tracking_submit") trackingSubmit++;
-
-          if (!pages[pageName]) pages[pageName] = 0;
-          pages[pageName]++;
-        });
-
-        const conversionRate = pageViews > 0
-          ? ((trackingSubmit / pageViews) * 100).toFixed(1) + "%"
-          : "0%";
-
-        const topPage = Object.keys(pages).length > 0
-          ? Object.keys(pages).reduce((a, b) => pages[a] > pages[b] ? a : b)
-          : "-";
-
-        document.getElementById("pageViews").innerText = pageViews;
-        document.getElementById("trackingSubmit").innerText = trackingSubmit;
-        document.getElementById("conversionRate").innerText = conversionRate;
-        document.getElementById("topPage").innerText = topPage;
-
-        const list = document.getElementById("eventList");
-        list.innerHTML = "";
-
-        if (data.length === 0) {
-          list.innerHTML = '<div class="empty">Henüz event yok.</div>';
-          return;
-        }
-
-        data.slice(0, 10).forEach(row => {
-          const eventName = getEventName(row);
-          const pageName = getPageName(row);
-          const timestamp = getTimestamp(row);
-
-          const div = document.createElement("div");
-          div.className = "event";
-
-          let timeText = "Zaman yok";
-          if (timestamp) {
-            const d = new Date(timestamp);
-            if (!isNaN(d.getTime())) {
-              timeText = d.toLocaleString("tr-TR");
-            }
-          }
-
-          div.innerText = ${eventName} — ${pageName} — ${timeText};
-          list.appendChild(div);
-        });
-
-      } catch (error) {
-        document.getElementById("eventList").innerHTML =
-          '<div class="empty">Veri alınamadı.</div>';
-        console.error("Dashboard error:", error);
+    const res = await fetch(SUPABASE_URL + "?select=*", {
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + SUPABASE_KEY
       }
+    });
+
+    const data = await res.json();
+
+    console.log("DATA:", data); // debug
+
+    let pageViews = 0;
+    let trackingSubmit = 0;
+    const pages = {};
+
+    data.forEach(e => {
+
+      const event = e.event_name || e.etkinlik_adi;
+      const page = e.page || e.sayfa || "/";
+      const time = e.timestamp || e.zaman_damgasi;
+
+      if (event === "page_view") pageViews++;
+      if (event === "tracking_submit") trackingSubmit++;
+
+      if (!pages[page]) pages[page] = 0;
+      pages[page]++;
+
+    });
+
+    const conversion = pageViews > 0
+      ? ((trackingSubmit / pageViews) * 100).toFixed(1) + "%"
+      : "0%";
+
+    const topPage = Object.keys(pages).length > 0
+      ? Object.keys(pages).reduce((a, b) => pages[a] > pages[b] ? a : b)
+      : "-";
+
+    document.getElementById("pageViews").innerText = pageViews;
+    document.getElementById("trackingSubmit").innerText = trackingSubmit;
+    document.getElementById("conversionRate").innerText = conversion;
+    document.getElementById("topPage").innerText = topPage;
+
+    const list = document.getElementById("eventList");
+    list.innerHTML = "";
+
+    if (!data || data.length === 0) {
+      list.innerHTML = "Henüz veri yok";
+      return;
     }
 
-    loadData();
-    setInterval(loadData, 5000);
-  </script>
+    data.slice(0, 10).forEach(e => {
+
+      const event = e.event_name || e.etkinlik_adi;
+      const page = e.page || e.sayfa || "/";
+      const time = e.timestamp || e.zaman_damgasi;
+
+      const div = document.createElement("div");
+      div.className = "event";
+
+      let timeText = "-";
+
+      if (time) {
+        const d = new Date(time);
+        if (!isNaN(d)) {
+          timeText = d.toLocaleString("tr-TR");
+        }
+      }
+
+      div.innerText = event + " — " + page + " — " + timeText;
+
+      list.appendChild(div);
+
+    });
+
+  } catch (err) {
+
+    console.error(err);
+    document.getElementById("eventList").innerText = "HATA: Veri çekilemedi";
+
+  }
+
+}
+
+loadData();
+setInterval(loadData, 5000);
+
+</script>
+
 </body>
 </html>
