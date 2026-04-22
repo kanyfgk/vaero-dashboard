@@ -140,7 +140,7 @@ const pageCounts = {};
 data.forEach(e => {
   const eventName = e.event_name || e.etkinlik_adi;
   const pageName = e.page || e.sayfa || "/";
-
+console.log("PAGE:", pageName);
   if (eventName === "page_view") {
     pageCounts[pageName] = (pageCounts[pageName] || 0) + 1;
   }
