@@ -126,18 +126,37 @@ async function loadData() {
       ? ((trackingSubmit / pageViews) * 100).toFixed(1) + "%"
       : "0%";
 
-    const topPage = Object.keys(pages).length > 0
-      ? Object.keys(pages).reduce((a, b) => pages[a] > pages[b] ? a : b)
-      : "-";
+    
 
     document.getElementById("pageViews").innerText = pageViews;
     document.getElementById("trackingSubmit").innerText = trackingSubmit;
     document.getElementById("conversionRate").innerText = conversion;
-    document.getElementById("topPage").innerText = topPage;
+  
 
     const list = document.getElementById("eventList");
     list.innerHTML = "";
+const pageCounts = {};
 
+data.forEach(e => {
+  const eventName = e.event_name || e.etkinlik_adi;
+  const pageName = e.page || e.sayfa || "/";
+
+  if (eventName === "page_view") {
+    pageCounts[pageName] = (pageCounts[pageName] || 0) + 1;
+  }
+});
+
+let topPage = "-";
+let max = 0;
+
+for (let page in pageCounts) {
+  if (pageCounts[page] > max) {
+    max = pageCounts[page];
+    topPage = page;
+  }
+}
+
+document.getElementById("topPage").innerText = topPage;
     if (!data || data.length === 0) {
       list.innerHTML = "Henüz veri yok";
       return;
