@@ -111,14 +111,15 @@ async function loadData() {
     data.forEach(e => {
 
       const event = e.event_name || e.etkinlik_adi;
-      const page = e.page || e.sayfa || "/";
+      const rawPage = e.page || e.sayfa || "/";
+const pageName = rawPage.split("/").pop() || "/";
       const time = e.timestamp || e.zaman_damgasi;
 
       if (event === "page_view") pageViews++;
       if (event === "tracking_submit") trackingSubmit++;
 
-      if (!pages[page]) pages[page] = 0;
-      pages[page]++;
+      if (!pages[pageName]) pages[pageName] = 0;
+      pages[pageName]++;
 
     });
 
