@@ -112,7 +112,7 @@ async function loadData() {
 
       const event = e.event_name || e.etkinlik_adi;
       const rawPage = e.page || e.sayfa || "/";
-const pageName = rawPage.split("/").pop() || "/";
+const pageName = rawPage.split("/").filter(Boolean).pop() || "home";
       const time = e.timestamp || e.zaman_damgasi;
 
       if (event === "page_view") pageViews++;
