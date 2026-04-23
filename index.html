@@ -112,7 +112,13 @@ async function loadData() {
 
       const event = e.event_name || e.etkinlik_adi;
       const rawPage = e.page || e.sayfa || "/";
-const pageName = rawPage.split("/").filter(Boolean).pop() || "home";
+let pageName = "/";
+
+try {
+  pageName = new URL(rawPage).pathname.replace(/\/$/, "") || "/";
+} catch {
+  pageName = rawPage || "/";
+}
       const time = e.timestamp || e.zaman_damgasi;
 
       if (event === "page_view") pageViews++;
