@@ -42,82 +42,69 @@ a{display:inline-block;margin-bottom:22px;padding:12px 18px;background:#222;colo
 </div>
 
 <script>
-const SUPABASE_URL = "https://wpfiszzxlwkmaqcqmywa.supabase.co/rest/v1/events";
-const SUPABASE_KEY = "sb_publishable_eTspasegbb8PbX2hEGMD5w_ggrWRuYN";
+const URL = "https://wpfiszzxlwkmaqcqmywa.supabase.co/rest/v1/events";
+const KEY = "sb_publishable_eTspasegbb8PbX2hEGMD5w_ggrWRuYN";
 
 async function loadData(){
-  const carrierList = document.getElementById("carrierList");
-  const eventList = document.getElementById("eventList");
-
   try{
-    const res = await fetch(SUPABASE_URL + "?select=*", {
+    const res = await fetch(URL + "?select=id,created_at,event_name,page,meta", {
       headers:{
-        "apikey": SUPABASE_KEY,
-        "Authorization": "Bearer " + SUPABASE_KEY
+        apikey: KEY,
+        Authorization: "Bearer " + KEY,
+        "Content-Type": "application/json"
       }
     });
 
     const data = await res.json();
+    console.log("DATA:", data);
 
     if(!Array.isArray(data)){
-      carrierList.innerHTML = "Veri alınamadı.";
-      eventList.innerHTML = JSON.stringify(data);
+      document.getElementById("eventList").innerText = "Veri alınamadı";
       return;
     }
 
-    data.sort((a,b)=>{
-      const da = new Date(a.created_at || a.timestamp || 0);
-      const db = new Date(b.created_at || b.timestamp || 0);
-      return db - da;
-    });
-
     let pageViews = 0;
-    let trackingSubmit = 0;
-    const carrierCounts = {};
+    let submits = 0;
+    let carriers = {};
 
     data.forEach(e=>{
-      const name = e.event_name;
-      const meta = e.meta || {};
-
-      if(name === "page_view") pageViews++;
-      if(name === "tracking_submit"){
-        trackingSubmit++;
-        const carrier = meta.carrier || "unknown";
-        carrierCounts[carrier] = (carrierCounts[carrier] || 0) + 1;
+      if(e.event_name === "page_view") pageViews++;
+      if(e.event_name === "tracking_submit"){
+        submits++;
+        const c = e.meta?.carrier || "unknown";
+        carriers[c] = (carriers[c] || 0) + 1;
       }
     });
 
     document.getElementById("pageViews").innerText = pageViews;
-    document.getElementById("trackingSubmit").innerText = trackingSubmit;
+    document.getElementById("trackingSubmit").innerText = submits;
     document.getElementById("conversionRate").innerText =
-      pageViews > 0 ? ((trackingSubmit / pageViews) * 100).toFixed(1) + "%" : "0%";
-    document.getElementById("dropOff").innerText = Math.max(pageViews - trackingSubmit, 0);
+      pageViews ? ((submits/pageViews)*100).toFixed(1)+"%" : "0%";
+    document.getElementById("dropOff").innerText = pageViews - submits;
 
-    carrierList.innerHTML = "";
-    const sortedCarriers = Object.entries(carrierCounts).sort((a,b)=>b[1]-a[1]);
+    const cl = document.getElementById("carrierList");
+    cl.innerHTML = "";
 
-    if(sortedCarriers.length === 0){
-      carrierList.innerHTML = "Henüz kargo seçimi yok.";
-    } else {
-      sortedCarriers.forEach(([carrier,count])=>{
-        carrierList.innerHTML += <div class="row"><strong>${carrier}</strong> — ${count} kez</div>;
+    Object.entries(carriers)
+      .sort((a,b)=>b[1]-a[1])
+      .forEach(([k,v])=>{
+        cl.innerHTML += <div class="row">${k} — ${v}</div>;
       });
-    }
 
-    eventList.innerHTML = "";
-    data.slice(0,15).forEach(e=>{
-      const time = e.created_at || e.timestamp || "-";
-      const carrier = e.meta?.carrier ? " / " + e.meta.carrier : "";
-      eventList.innerHTML += `
+    const el = document.getElementById("eventList");
+    el.innerHTML = "";
+
+    data.slice(-15).reverse().forEach(e=>{
+      el.innerHTML += `
         <div class="row">
-          <strong>${e.event_name}</strong>${carrier}<br>
-          <span class="small">${e.page || "/"} — ${time}</span>
+          <b>${e.event_name}</b> ${e.meta?.carrier || ""}
+          <br><span class="small">${e.page} — ${e.created_at}</span>
         </div>`;
     });
 
   }catch(err){
-    carrierList.innerHTML = "Hata oluştu.";
-    eventList.innerHTML = err.message;
+    console.error(err);
+    document.getElementById("eventList").innerText = "Hata: " + err.message;
   }
 }
 
