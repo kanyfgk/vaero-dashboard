@@ -4,25 +4,68 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VAERO Dashboard</title>
+
 <style>
-body{margin:0;padding:32px;font-family:Arial,sans-serif;background:#f5f3ee;color:#222}
-h1{margin-bottom:16px}
-a{display:inline-block;margin-bottom:22px;padding:12px 18px;background:#222;color:white;text-decoration:none;border-radius:12px}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
-.card,.section{background:#ffffffcc;border-radius:18px;padding:20px;box-shadow:0 10px 25px rgba(0,0,0,.04)}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  padding:28px;
+  font-family:Arial,sans-serif;
+  background:#f5f3ee;
+  color:#222;
+}
+h1{margin:0 0 14px}
+.buttons{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap}
+a{
+  padding:11px 16px;
+  background:#222;
+  color:white;
+  text-decoration:none;
+  border-radius:12px;
+  font-size:14px;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin-bottom:18px;
+}
+.card,.section{
+  background:#ffffffcc;
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,.04);
+}
 .label{font-size:13px;color:#666;margin-bottom:8px}
 .value{font-size:26px;font-weight:700}
-.section{margin-top:20px}
-.row{padding:10px 0;border-bottom:1px solid #eee;font-size:14px}
-.small{color:#777;font-size:12px}
+.section{margin-top:18px}
+.row{
+  padding:10px 0;
+  border-bottom:1px solid #eee;
+  font-size:14px;
+}
+.small{font-size:12px;color:#777}
+.status{
+  padding:10px;
+  margin-bottom:14px;
+  border-radius:12px;
+  background:#eee;
+  font-size:13px;
+}
 @media(max-width:900px){.grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
+
 <body>
 
 <h1>VAERO Dashboard</h1>
 
-<a href="https://project-dn5qk.vercel.app" target="_blank">Track Sayfasını Aç</a>
+<div class="buttons">
+  <a href="https://project-dn5qk.vercel.app" target="_blank">Track Sayfasını Aç</a>
+  <a href="#" target="_blank">Satış Sayfası Linki</a>
+</div>
+
+<div id="status" class="status">Veri yükleniyor...</div>
 
 <div class="grid">
   <div class="card"><div class="label">Page Views</div><div id="pageViews" class="value">0</div></div>
@@ -42,69 +85,103 @@ a{display:inline-block;margin-bottom:22px;padding:12px 18px;background:#222;colo
 </div>
 
 <script>
-const URL = "https://wpfiszzxlwkmaqcqmywa.supabase.co/rest/v1/events";
-const KEY = "sb_publishable_eTspasegbb8PbX2hEGMD5w_ggrWRuYN";
+const API_URL = "https://wpfiszzxlwkmaqcqmywa.supabase.co/rest/v1/events?select=id,created_at,event_name,page,meta";
+const API_KEY = "sb_publishable_eTspasegbb8PbX2hEGMD5w_ggrWRuYN";
+
+const statusBox = document.getElementById("status");
+const pageViewsBox = document.getElementById("pageViews");
+const submitBox = document.getElementById("trackingSubmit");
+const conversionBox = document.getElementById("conversionRate");
+const dropOffBox = document.getElementById("dropOff");
+const carrierList = document.getElementById("carrierList");
+const eventList = document.getElementById("eventList");
 
 async function loadData(){
   try{
-    const res = await fetch(URL + "?select=id,created_at,event_name,page,meta", {
-      headers:{
-        apikey: KEY,
-        Authorization: "Bearer " + KEY,
+    statusBox.innerText = "Supabase verisi alınıyor...";
+
+    const response = await fetch(API_URL, {
+      method: "GET",
+      headers: {
+        "apikey": API_KEY,
+        "Authorization": "Bearer " + API_KEY,
         "Content-Type": "application/json"
       }
     });
 
-    const data = await res.json();
-    console.log("DATA:", data);
+    const text = await response.text();
 
-    if(!Array.isArray(data)){
-      document.getElementById("eventList").innerText = "Veri alınamadı";
+    let data;
+    try{
+      data = JSON.parse(text);
+    }catch(e){
+      statusBox.innerText = "JSON okunamadı: " + text;
       return;
     }
 
+    if(!Array.isArray(data)){
+      statusBox.innerText = "Veri dizi olarak gelmedi: " + JSON.stringify(data);
+      return;
+    }
+
+    statusBox.innerText = "Veri geldi: " + data.length + " kayıt";
+
     let pageViews = 0;
     let submits = 0;
-    let carriers = {};
+    const carriers = {};
 
-    data.forEach(e=>{
-      if(e.event_name === "page_view") pageViews++;
-      if(e.event_name === "tracking_submit"){
+    data.forEach(function(item){
+      if(item.event_name === "page_view") pageViews++;
+
+      if(item.event_name === "tracking_submit"){
         submits++;
-        const c = e.meta?.carrier || "unknown";
-        carriers[c] = (carriers[c] || 0) + 1;
+
+        let carrier = "unknown";
+        if(item.meta && item.meta.carrier){
+          carrier = item.meta.carrier;
+        }
+
+        carriers[carrier] = (carriers[carrier] || 0) + 1;
       }
     });
 
-    document.getElementById("pageViews").innerText = pageViews;
-    document.getElementById("trackingSubmit").innerText = submits;
-    document.getElementById("conversionRate").innerText =
-      pageViews ? ((submits/pageViews)*100).toFixed(1)+"%" : "0%";
-    document.getElementById("dropOff").innerText = pageViews - submits;
+    pageViewsBox.innerText = pageViews;
+    submitBox.innerText = submits;
+    conversionBox.innerText = pageViews > 0 ? ((submits / pageViews) * 100).toFixed(1) + "%" : "0%";
+    dropOffBox.innerText = Math.max(pageViews - submits, 0);
 
-    const cl = document.getElementById("carrierList");
-    cl.innerHTML = "";
+    carrierList.innerHTML = "";
+    const carrierEntries = Object.entries(carriers).sort(function(a,b){return b[1]-a[1]});
 
-    Object.entries(carriers)
-      .sort((a,b)=>b[1]-a[1])
-      .forEach(([k,v])=>{
-        cl.innerHTML += <div class="row">${k} — ${v}</div>;
+    if(carrierEntries.length === 0){
+      carrierList.innerHTML = "Henüz kargo seçimi yok.";
+    }else{
+      carrierEntries.forEach(function(entry){
+        carrierList.innerHTML += '<div class="row"><strong>' + entry[0] + '</strong> — ' + entry[1] + ' kez</div>';
+      });
+    }
+
+    eventList.innerHTML = "";
+
+    data
+      .slice()
+      .sort(function(a,b){
+        return new Date(b.created_at) - new Date(a.created_at);
+      })
+      .slice(0,15)
+      .forEach(function(item){
+        const carrier = item.meta && item.meta.carrier ? " / " + item.meta.carrier : "";
+        eventList.innerHTML +=
+          '<div class="row">' +
+          '<strong>' + item.event_name + '</strong>' + carrier + '<br>' +
+          '<span class="small">' + (item.page || "/") + " — " + (item.created_at || "-") + '</span>' +
+          '</div>';
       });
 
-    const el = document.getElementById("eventList");
-    el.innerHTML = "";
-
-    data.slice(-15).reverse().forEach(e=>{
-      el.innerHTML += `
-        <div class="row">
-          <b>${e.event_name}</b> ${e.meta?.carrier || ""}
-          <br><span class="small">${e.page} — ${e.created_at}</span>
-        </div>`;
-    });
-
-  }catch(err){
-    console.error(err);
-    document.getElementById("eventList").innerText = "Hata: " + err.message;
+  }catch(error){
+    statusBox.innerText = "Hata: " + error.message;
+    carrierList.innerHTML = "Hata oluştu.";
+    eventList.innerHTML = "Hata oluştu.";
   }
 }
 
