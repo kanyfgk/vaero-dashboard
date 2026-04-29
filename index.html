@@ -227,9 +227,18 @@ async function loadData(){
 
     eventList.innerHTML = "";
 
-    data
-      .slice()
-      .sort(function(a,b){
+const filteredData = data
+  .slice()
+  .sort(function(a,b){
+    return new Date(b.created_at) - new Date(a.created_at);
+  })
+  .slice(0,15);
+
+runAIReport(filteredData);
+
+data
+  .slice()
+  .sort(function(a,b){ 
         return new Date(b.created_at) - new Date(a.created_at);
       })
       .slice(0,15)
@@ -248,7 +257,39 @@ async function loadData(){
     eventList.innerHTML = "Hata oluştu.";
   }
 }
+function runAIReport(events){
+  const count = name => events.filter(e => e.event_name === name).length;
 
+  const pageViews = count("page_view");
+  const heroClicks = count("home_hero_sales_click");
+  const bottomClicks = count("home_bottom_sales_click");
+  const trackClicks = count("home_track_click");
+  const trackingSubmits = events.filter(e => e.event_name === "tracking_submit").length;
+  const whatsappClicks = events.filter(e => e.event_name === "whatsapp_click").length;
+
+  const salesClicks = heroClicks + bottomClicks;
+  const salesRate = pageViews ? Math.round((salesClicks / pageViews) * 100) : 0;
+  const whatsappRate = salesClicks ? Math.round((whatsappClicks / salesClicks) * 100) : 0;
+
+  document.getElementById("ai-loss").innerText =
+    whatsappClicks === 0
+      ? "Satış sayfasına ilgi var ama WhatsApp aksiyonu henüz zayıf görünüyor."
+      : "Kullanıcılar satış akışına giriyor. Asıl takip edilmesi gereken nokta WhatsApp dönüşümü.";
+
+  document.getElementById("ai-opportunity").innerText =
+    trackClicks > 0
+      ? "Gönderi durumu linki kullanılıyor. Bu alan güven artıran yardımcı servis olarak güçlendirilebilir."
+      : "Ana fırsat: hero ve satış butonlarının hangi noktadan daha çok tıklandığını karşılaştırmak.";
+
+  document.getElementById("ai-behavior").innerText =
+    Page view: ${pageViews}, satış geçişi: ${salesClicks}, track tıklaması: ${trackClicks}, takip gönderimi: ${trackingSubmits}. Satış geçiş oranı yaklaşık %${salesRate}.;
+
+  document.getElementById("ai-actions").innerHTML = `
+    <li>Hero ve en alt satış butonlarının performansını ayrı takip et.</li>
+    <li>Sales sayfasına WhatsApp tıklama takibi ekle.</li>
+    <li>Session ID ekleyerek kullanıcı yolculuğunu kişi bazlı takip et.</li>
+  `;
+}
 loadData();
 setInterval(loadData, 5000);
 </script>
