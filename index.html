@@ -307,6 +307,38 @@ function runAIReport(events){
 }
 loadData();
 setInterval(loadData, 5000);
+  function askVaeroAI() {
+  const input = document.getElementById("aiQuestion");
+  const chatBox = document.getElementById("aiChatBox");
+
+  const question = input.value;
+  if (!question) return;
+
+  // Kullanıcı mesajı ekle
+  chatBox.innerHTML += <div class="ai-message user">${question}</div>;
+
+  // Basit AI cevap sistemi (ilk versiyon)
+  let response = "";
+
+  if (question.toLowerCase().includes("veri")) {
+    response = "Son verilerde kullanıcılar tracking kısmına ilgi gösteriyor. Ancak satış dönüşüm oranı artırılmalı.";
+  } else if (question.toLowerCase().includes("fikir")) {
+    response = "Bu fikir potansiyel taşıyor, ancak kullanıcıyı daha hızlı aksiyona sokacak bir CTA eklenmeli.";
+  } else if (question.toLowerCase().includes("geliştir")) {
+    response = "En büyük geliştirme alanı: kullanıcıyı satış sayfasına yönlendirme akışı.";
+  } else {
+    response = "Bu soruyu analiz ediyorum. Daha detaylı AI sistemi yakında bağlanacak.";
+  }
+
+  // AI cevabı ekle
+  chatBox.innerHTML += <div class="ai-message bot">${response}</div>;
+
+  // input temizle
+  input.value = "";
+
+  // scroll aşağı
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
 </script>
 
 </body>
