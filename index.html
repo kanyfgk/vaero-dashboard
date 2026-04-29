@@ -297,8 +297,10 @@ function runAIReport(events){
       : "Ana fırsat: hero ve satış butonlarının hangi noktadan daha çok tıklandığını karşılaştırmak.";
 
   document.getElementById("ai-behavior").innerText =
-    Page view: ${pageViews}, satış geçişi: ${salesClicks}, track tıklaması: ${trackClicks}, takip gönderimi: ${trackingSubmits}. Satış geçiş oranı yaklaşık %${salesRate}.;
-
+  "Page view: " + pageViews +
+  ", satış geçişi: " + salesClicks +
+  ", track tıklaması: " + trackClicks +
+  ", takip gönderimi: " + trackingSubmits;
   document.getElementById("ai-actions").innerHTML = `
     <li>Hero ve en alt satış butonlarının performansını ayrı takip et.</li>
     <li>Sales sayfasına WhatsApp tıklama takibi ekle.</li>
