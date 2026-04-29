@@ -316,29 +316,28 @@ setInterval(loadData, 5000);
   const question = input.value;
   if (!question) return;
 
-  // Kullanıcı mesajı ekle
-  chatBox.innerHTML += <div class="ai-message user">${question}</div>;
+  // Kullanıcı mesajı
+  chatBox.innerHTML += '<div class="ai-message user">' + question + '</div>';
 
-  // Basit AI cevap sistemi (ilk versiyon)
   let response = "";
 
   if (question.toLowerCase().includes("veri")) {
-    response = "Son verilerde kullanıcılar tracking kısmına ilgi gösteriyor. Ancak satış dönüşüm oranı artırılmalı.";
-  } else if (question.toLowerCase().includes("fikir")) {
-    response = "Bu fikir potansiyel taşıyor, ancak kullanıcıyı daha hızlı aksiyona sokacak bir CTA eklenmeli.";
-  } else if (question.toLowerCase().includes("geliştir")) {
-    response = "En büyük geliştirme alanı: kullanıcıyı satış sayfasına yönlendirme akışı.";
-  } else {
-    response = "Bu soruyu analiz ediyorum. Daha detaylı AI sistemi yakında bağlanacak.";
+    response = "Son verilere göre kullanıcılar tracking kısmına ilgi gösteriyor.";
+  } 
+  else if (question.toLowerCase().includes("fikir")) {
+    response = "Bu fikir mantıklı, ancak kullanıcıyı daha hızlı aksiyona sokacak bir yapı eklenmeli.";
+  } 
+  else if (question.toLowerCase().includes("analiz")) {
+    response = "Verilere göre en kritik nokta dönüşüm oranı. Drop-off azaltılmalı.";
+  } 
+  else {
+    response = "Sorunu analiz ediyorum. Daha gelişmiş AI sistemi yakında bağlanacak.";
   }
 
-  // AI cevabı ekle
-  chatBox.innerHTML += <div class="ai-message bot">${response}</div>;
+  // AI cevabı
+  chatBox.innerHTML += '<div class="ai-message bot">' + response + '</div>';
 
-  // input temizle
   input.value = "";
-
-  // scroll aşağı
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 </script>
