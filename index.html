@@ -149,6 +149,7 @@ a{
       Bir karta tıklayınca detay burada açılacak.
     </div>
     <canvas id="detailChart" style="margin-top:20px;max-height:260px;"></canvas>
+    <div id="conversionInfo" style="margin-top:15px;font-size:14px;color:#333;"></div>
   </div>
 </div>
 <h1>VAERO Dashboard</h1>
@@ -452,8 +453,34 @@ function drawChart(labels, values, labelName){
   const ctx = document.getElementById("detailChart").getContext("2d");
 
   if(currentChart){
+
     currentChart.destroy();
+
   }
+
+  currentChart = new Chart(ctx, {
+
+    type: 'line',
+
+    data: {
+
+      labels: labels,
+
+      datasets: [{
+
+        label: labelName,
+
+        data: values,
+
+        tension: 0.4
+
+      }]
+
+    }
+
+  });
+
+}
 function drawSalesChart(){
 
   const ctx = document.getElementById("detailChart").getContext("2d");
