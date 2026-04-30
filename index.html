@@ -112,10 +112,10 @@ a{
 
 <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px">
 
-  <div class="card">Visitors<br><b id="visitors">0</b></div>
-  <div class="card">WhatsApp Click<br><b id="whatsapp">0</b></div>
-  <div class="card">Sales Click<br><b id="sales">0</b></div>
-  <div class="card">Track Usage<br><b id="track">0</b></div>
+  <div class="card" id="cardVisitors">Visitors<br><b id="visitors">0</b></div>
+<div class="card" id="cardWhatsapp">WhatsApp Click<br><b id="whatsapp">0</b></div>
+<div class="card" id="cardSales">Sales Click<br><b id="sales">0</b></div>
+<div class="card" id="cardTrack">Track Usage<br><b id="track">0</b></div>
 
 </div>
   <div id="detailPanel" class="section" style="display:none;margin-bottom:20px">
@@ -436,10 +436,34 @@ function loadFakeData(){
 
   analyzeSystem(data);
 }
-
-window.onload = function(){
-  setTimeout(loadFakeData, 500);
+function openDetail(title, today, week, lastWeek, peakHour, content){
+  document.getElementById("detailPanel").style.display = "block";
+  document.getElementById("detailTitle").innerText = title;
+  document.getElementById("detailToday").innerText = today;
+  document.getElementById("detailWeek").innerText = week;
+  document.getElementById("detailLastWeek").innerText = lastWeek;
+  document.getElementById("detailPeakHour").innerText = peakHour;
+  document.getElementById("detailContent").innerText = content;
 }
+
+document.getElementById("cardVisitors").onclick = function(){
+  openDetail("Visitors", 120, 420, 310, "20:00–22:00", "Ziyaretçi trafiği katmanı açıldı.");
+};
+
+document.getElementById("cardWhatsapp").onclick = function(){
+  openDetail("WhatsApp Click", 4, 17, 9, "20:00–22:00", "WhatsApp geçişleri katmanı açıldı.");
+};
+
+document.getElementById("cardSales").onclick = function(){
+  openDetail("Sales Click", 1, 11, 6, "19:00–21:00", "Satış sayfası geçişleri katmanı açıldı.");
+};
+
+document.getElementById("cardTrack").onclick = function(){
+  openDetail("Track Usage", 15, 41, 22, "18:00–23:00", "Kargo takip kullanımı katmanı açıldı.");
+};
+document.addEventListener("DOMContentLoaded", function(){
+  loadFakeData();
+});
 
 </script>
 
