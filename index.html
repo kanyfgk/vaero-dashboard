@@ -469,7 +469,22 @@ function drawChart(labels, values, labelName){
 
 }
 document.getElementById("cardVisitors").onclick = function(){
-  openDetail("Visitors", 120, 420, 310, "20:00–22:00", "Ziyaretçi trafiği katmanı açıldı.");
+
+  openDetail(
+    "Ziyaretçi Analizi",
+    120,
+    420,
+    310,
+    "20:00–22:00",
+    "Ziyaretçi trafiği analiz ediliyor."
+  );
+
+  drawChart(
+    ["12:00","14:00","16:00","18:00","20:00","22:00"],
+    [10, 25, 18, 40, 60, 45],
+    "Saatlik Trafik"
+  );
+
 };
 
 document.getElementById("cardWhatsapp").onclick = function(){
