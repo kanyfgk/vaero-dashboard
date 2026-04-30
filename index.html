@@ -363,6 +363,7 @@ setInterval(loadData, 5000);
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+<script>
 function analyzeSystem(data){
 
   let visitors = data.visitors;
@@ -405,10 +406,10 @@ function loadFakeData(){
   analyzeSystem(data);
 }
 
-window.onload = function() {
+window.onload = function(){
   loadFakeData();
 }
-
+</script>
 
 </body>
 </html>
