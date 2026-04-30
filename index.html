@@ -506,21 +506,21 @@ document.getElementById("cardWhatsapp").onclick = function(){
 
 };
 
-document.getElementById("cardSales").onclick = function(){
+document.getElementById("cardWhatsapp").onclick = function(){
 
   openDetail(
-    "Satışa Geçiş Analizi",
-    "Hero: 8 | Alt: 3",
-    "Toplam: 11",
-    "Geçen hafta: 6",
-    "En hızlı: 7 sn",
-    "Hero hızlı çalışıyor, alt section zayıf."
+    "WhatsApp’a Geçiş Analizi",
+    "Geçiş: 4",
+    "Bu hafta: 17",
+    "Geçen hafta: 9",
+    "En yoğun: 20:00–22:00",
+    "İlgi var ama kullanıcı karar aşamasında."
   );
 
   drawChart(
-    ["0-5sn","5-10sn","10-20sn","20sn+"],
-    [5, 4, 1, 1],
-    "Karar Süresi"
+    ["Görüntüleme","Tıklama","WhatsApp","Cevap"],
+    [120, 30, 4, 1],
+    "Funnel"
   );
 
 };
