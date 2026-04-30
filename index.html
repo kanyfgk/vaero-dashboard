@@ -90,12 +90,34 @@ a{
   color:#444;
   margin-bottom:6px;
 }
+  .card{
+  background:#fff;
+  padding:16px;
+  border-radius:10px;
+  min-width:120px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+  font-size:14px;
+}
 </style>
   
 </head>
 
 <body>
+<div id="alertBox" style="background:#111;color:#fff;padding:16px;border-radius:12px;margin-bottom:20px">
+  <b>VAERO SYSTEM STATUS</b>
+  <div id="alertContent" style="margin-top:8px;color:#ccc">
+    Veri bekleniyor...
+  </div>
+</div>
 
+<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px">
+
+  <div class="card">Visitors<br><b id="visitors">0</b></div>
+  <div class="card">WhatsApp Click<br><b id="whatsapp">0</b></div>
+  <div class="card">Sales Click<br><b id="sales">0</b></div>
+  <div class="card">Track Usage<br><b id="track">0</b></div>
+
+</div>
 <h1>VAERO Dashboard</h1>
 
 <div class="buttons">
@@ -340,6 +362,52 @@ setInterval(loadData, 5000);
   input.value = "";
   chatBox.scrollTop = chatBox.scrollHeight;
 }
+<script>
+
+function analyzeSystem(data){
+
+  let visitors = data.visitors;
+  let whatsapp = data.whatsapp;
+  let sales = data.sales;
+  let track = data.track;
+
+  let alert = "";
+
+  if(visitors > 50 && whatsapp < 5){
+    alert = "⚠️ İlgi var ama WhatsApp düşük → Conversion sorunu";
+  }
+  else if(whatsapp > 10 && sales < 3){
+    alert = "⚠️ WhatsApp var ama satış yok → İkna sorunu";
+  }
+  else if(track > 10){
+    alert = "⚠️ Track yüksek → Güven ihtiyacı artmış";
+  }
+  else{
+    alert = "✅ Sistem stabil";
+  }
+
+  document.getElementById("alertContent").innerText = alert;
+}
+
+function loadFakeData(){
+
+  let data = {
+    visitors: 120,
+    whatsapp: 4,
+    sales: 1,
+    track: 15
+  };
+
+  document.getElementById("visitors").innerText = data.visitors;
+  document.getElementById("whatsapp").innerText = data.whatsapp;
+  document.getElementById("sales").innerText = data.sales;
+  document.getElementById("track").innerText = data.track;
+
+  analyzeSystem(data);
+}
+
+loadFakeData();
+
 </script>
 
 </body>
