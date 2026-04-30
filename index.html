@@ -454,7 +454,68 @@ function drawChart(labels, values, labelName){
   if(currentChart){
     currentChart.destroy();
   }
+function drawSalesChart(){
 
+  const ctx = document.getElementById("detailChart").getContext("2d");
+
+  if(currentChart){
+    currentChart.destroy();
+  }
+
+  const pointLabelPlugin = {
+    id: "pointLabelPlugin",
+    afterDatasetsDraw(chart){
+      const {ctx} = chart;
+      ctx.save();
+      ctx.font = "12px Arial";
+      ctx.fillStyle = "#222";
+      ctx.textAlign = "center";
+
+      chart.data.datasets.forEach(function(dataset, datasetIndex){
+        const meta = chart.getDatasetMeta(datasetIndex);
+
+        meta.data.forEach(function(point, index){
+          const value = dataset.data[index];
+          ctx.fillText(value, point.x, point.y - 10);
+        });
+      });
+
+      ctx.restore();
+    }
+  };
+
+  currentChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: ["Hero", "Satış Sayfası", "WhatsApp", "Satış"],
+      datasets: [
+        {
+          label: "Hero’dan Satışa Geçiş",
+          data: [8, 6, 4, 1],
+          tension: 0.4
+        },
+        {
+          label: "Alt Section’dan Satışa Geçiş",
+          data: [3, 2, 1, 0],
+          tension: 0.4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: true }
+      },
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    },
+    plugins: [pointLabelPlugin]
+  });
+
+}
   currentChart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -517,11 +578,7 @@ document.getElementById("cardSales").onclick = function(){
     "Hero güçlü, alt section kullanıcıyı ikna etmiyor."
   );
 
-  drawChart(
-    ["Hero","Alt Section","WhatsApp","Satış"],
-    [8, 3, 4, 1],
-    "Satış Funnel"
-  );
+  drawSalesChart();
 
 };
 
