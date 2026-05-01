@@ -219,422 +219,141 @@ a{
 </div>
 
 <script>
-const API_URL = "https://wpfiszzxlwkmaqcqmywa.supabase.co/rest/v1/events?select=id,created_at,event_name,page,meta";
-const API_KEY = "sb_publishable_eTspasegbb8PbX2hEGMD5w_ggrWRuYN";
 
-const statusBox = document.getElementById("status");
-const pageViewsBox = document.getElementById("pageViews");
-const submitBox = document.getElementById("trackingSubmit");
-const conversionBox = document.getElementById("conversionRate");
-const dropOffBox = document.getElementById("dropOff");
-const carrierList = document.getElementById("carrierList");
-const eventList = document.getElementById("eventList");
-
-async function loadData(){
-  try{
-    statusBox.innerText = "Supabase verisi alınıyor...";
-
-    const response = await fetch(API_URL, {
-      method: "GET",
-      headers: {
-        "apikey": API_KEY,
-        "Authorization": "Bearer " + API_KEY,
-        "Content-Type": "application/json"
-      }
-    });
-
-    const text = await response.text();
-
-    let data;
-    try{
-      data = JSON.parse(text);
-    }catch(e){
-      statusBox.innerText = "JSON okunamadı: " + text;
-      return;
-    }
-
-    if(!Array.isArray(data)){
-      statusBox.innerText = "Veri dizi olarak gelmedi: " + JSON.stringify(data);
-      return;
-    }
-
-    statusBox.innerText = "Veri geldi: " + data.length + " kayıt";
-
-    let pageViews = 0;
-    let submits = 0;
-    const carriers = {};
-
-    data.forEach(function(item){
-      if(item.event_name === "page_view") pageViews++;
-
-      if(item.event_name === "tracking_submit"){
-        submits++;
-
-        let carrier = "unknown";
-        if(item.meta && item.meta.carrier){
-          carrier = item.meta.carrier;
-        }
-
-        carriers[carrier] = (carriers[carrier] || 0) + 1;
-      }
-    });
-
-    pageViewsBox.innerText = pageViews;
-    submitBox.innerText = submits;
-    conversionBox.innerText = pageViews > 0 ? ((submits / pageViews) * 100).toFixed(1) + "%" : "0%";
-    dropOffBox.innerText = Math.max(pageViews - submits, 0);
-
-    carrierList.innerHTML = "";
-    const carrierEntries = Object.entries(carriers).sort(function(a,b){return b[1]-a[1]});
-
-    if(carrierEntries.length === 0){
-      carrierList.innerHTML = "Henüz kargo seçimi yok.";
-    }else{
-      carrierEntries.forEach(function(entry){
-        carrierList.innerHTML += '<div class="row"><strong>' + entry[0] + '</strong> — ' + entry[1] + ' kez</div>';
-      });
-    }
-
-    eventList.innerHTML = "";
-
-const filteredData = data
-  .slice()
-  .sort(function(a,b){
-    return new Date(b.created_at) - new Date(a.created_at);
-  })
-  .slice(0,15);
-
-runAIReport(filteredData);
-
-data
-  .slice()
-  .sort(function(a,b){ 
-        return new Date(b.created_at) - new Date(a.created_at);
-      })
-      .slice(0,15)
-      .forEach(function(item){
-        const carrier = item.meta && item.meta.carrier ? " / " + item.meta.carrier : "";
-        eventList.innerHTML +=
-          '<div class="row">' +
-          '<strong>' + item.event_name + '</strong>' + carrier + '<br>' +
-          '<span class="small">' + (item.page || "/") + " — " + (item.created_at || "-") + '</span>' +
-          '</div>';
-      });
-
-  }catch(error){
-    statusBox.innerText = "Hata: " + error.message;
-    carrierList.innerHTML = "Hata oluştu.";
-    eventList.innerHTML = "Hata oluştu.";
-  }
-}
-function runAIReport(events){
-  const count = name => events.filter(e => e.event_name === name).length;
-
-  const pageViews = count("page_view");
-  const heroClicks = count("home_hero_sales_click");
-  const bottomClicks = count("home_bottom_sales_click");
-  const trackClicks = count("home_track_click");
-  const trackingSubmits = events.filter(e => e.event_name === "tracking_submit").length;
-  const whatsappClicks = events.filter(e => e.event_name === "whatsapp_click").length;
-
-  const salesClicks = heroClicks + bottomClicks;
-  const salesRate = pageViews ? Math.round((salesClicks / pageViews) * 100) : 0;
-  const whatsappRate = salesClicks ? Math.round((whatsappClicks / salesClicks) * 100) : 0;
-
-  document.getElementById("ai-loss").innerText =
-    whatsappClicks === 0
-      ? "Satış sayfasına ilgi var ama WhatsApp aksiyonu henüz zayıf görünüyor."
-      : "Kullanıcılar satış akışına giriyor. Asıl takip edilmesi gereken nokta WhatsApp dönüşümü.";
-
-  document.getElementById("ai-opportunity").innerText =
-    trackClicks > 0
-      ? "Gönderi durumu linki kullanılıyor. Bu alan güven artıran yardımcı servis olarak güçlendirilebilir."
-      : "Ana fırsat: hero ve satış butonlarının hangi noktadan daha çok tıklandığını karşılaştırmak.";
-
-  document.getElementById("ai-behavior").innerText =
-  "Page view: " + pageViews +
-  ", satış geçişi: " + salesClicks +
-  ", track tıklaması: " + trackClicks +
-  ", takip gönderimi: " + trackingSubmits;
-  document.getElementById("ai-actions").innerHTML = `
-    <li>Hero ve en alt satış butonlarının performansını ayrı takip et.</li>
-    <li>Sales sayfasına WhatsApp tıklama takibi ekle.</li>
-    <li>Session ID ekleyerek kullanıcı yolculuğunu kişi bazlı takip et.</li>
-  `;
-}
-loadData();
-setInterval(loadData, 5000);
-  function askVaeroAI() {
-  const input = document.getElementById("aiQuestion");
-  const chatBox = document.getElementById("aiChatBox");
-
-  const question = input.value;
-  if (!question) return;
-
-  // Kullanıcı mesajı
-  chatBox.innerHTML += '<div class="ai-message user">' + question + '</div>';
-
-  let response = "";
-
-  if (question.toLowerCase().includes("veri")) {
-    response = "Son verilere göre kullanıcılar tracking kısmına ilgi gösteriyor.";
-  } 
-  else if (question.toLowerCase().includes("fikir")) {
-    response = "Bu fikir mantıklı, ancak kullanıcıyı daha hızlı aksiyona sokacak bir yapı eklenmeli.";
-  } 
-  else if (question.toLowerCase().includes("analiz")) {
-    response = "Verilere göre en kritik nokta dönüşüm oranı. Drop-off azaltılmalı.";
-  } 
-  else {
-    response = "Sorunu analiz ediyorum. Daha gelişmiş AI sistemi yakında bağlanacak.";
-  }
-
-  // AI cevabı
-  chatBox.innerHTML += '<div class="ai-message bot">' + response + '</div>';
-
-  input.value = "";
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-function analyzeSystem(data){
-
-  let visitors = data.visitors;
-  let whatsapp = data.whatsapp;
-  let sales = data.sales;
-  let track = data.track;
-
-  let alert = "";
-
-  if(visitors > 50 && whatsapp < 5){
-    alert = "⚠️ İlgi var ama WhatsApp düşük → Conversion sorunu";
-  }
-  else if(whatsapp > 10 && sales < 3){
-    alert = "⚠️ WhatsApp var ama satış yok → İkna sorunu";
-  }
-  else if(track > 10){
-    alert = "⚠️ Track yüksek → Güven ihtiyacı artmış";
-  }
-  else{
-    alert = "✅ Sistem stabil";
-  }
-
-  document.getElementById("alertContent").innerText = alert;
-}
-
-function loadFakeData(){
-
-  let data = {
-    visitors: 120,
-    whatsapp: 4,
-    sales: 1,
-    track: 15
-  };
-
-  document.getElementById("visitors").innerText = data.visitors;
-  document.getElementById("whatsapp").innerText = data.whatsapp;
-  document.getElementById("sales").innerText = data.sales;
-  document.getElementById("track").innerText = data.track;
-
-  analyzeSystem(data);
-}
-function openDetail(title, today, week, lastWeek, peakHour, content){
-  document.getElementById("detailPanel").style.display = "block";
-  document.getElementById("detailTitle").innerText = title;
-  document.getElementById("detailToday").innerText = today;
-  document.getElementById("detailWeek").innerText = week;
-  document.getElementById("detailLastWeek").innerText = lastWeek;
-  document.getElementById("detailPeakHour").innerText = peakHour;
-  document.getElementById("detailContent").innerText = content;
-}
 let currentChart = null;
 
-function drawChart(labels, values, labelName){
-  let currentChart = null;
-
-function drawChart(labels, values, labelName){
-  const chartCtx = document.getElementById("detailChart").getContext("2d");
-
+/* ===== CHART TEMİZLE ===== */
+function clearChart(){
   if(currentChart){
     currentChart.destroy();
+    currentChart = null;
   }
+}
 
-  currentChart = new Chart(chartCtx, {
-    type: "line",
-    data: {
-      labels: labels,
-      datasets: [{
-        label: labelName,
-        data: values,
-        tension: 0.4
+/* ===== NORMAL GRAFİK ===== */
+function drawChart(labels, values, label){
+  clearChart();
+
+  const ctx = document.getElementById("detailChart").getContext("2d");
+
+  currentChart = new Chart(ctx,{
+    type:"line",
+    data:{
+      labels:labels,
+      datasets:[{
+        label:label,
+        data:values,
+        tension:0.4
       }]
     },
-    options: {
-      responsive: true,
-      interaction: {
-        mode: "index",
-        intersect: false
+    options:{
+      responsive:true,
+      interaction:{mode:"index",intersect:false},
+      plugins:{
+        legend:{display:true},
+        tooltip:{enabled:true}
       },
-      plugins: {
-        legend: { display: true },
-        tooltip: {
-          enabled: true,
-          callbacks: {
-            label: function(context){
-              return context.dataset.label + ": " + context.raw + " kişi";
-            }
-          }
-        }
-      },
-      scales: {
-        y: { beginAtZero: true }
-      }
+      scales:{y:{beginAtZero:true}}
     }
   });
 }
 
+/* ===== SATIŞ GRAFİĞİ ===== */
 function drawSalesChart(){
-  const chartCtx = document.getElementById("detailChart").getContext("2d");
+  clearChart();
 
-  if(currentChart){
-    currentChart.destroy();
-  }
+  const ctx = document.getElementById("detailChart").getContext("2d");
 
-  const pointLabelPlugin = {
-    id: "pointLabelPlugin",
-    afterDatasetsDraw(chart){
-      const {ctx} = chart;
-      ctx.save();
-      ctx.font = "bold 12px Arial";
-      ctx.fillStyle = "#000";
-      ctx.textAlign = "center";
-
-      chart.data.datasets.forEach(function(dataset, datasetIndex){
-        const meta = chart.getDatasetMeta(datasetIndex);
-        meta.data.forEach(function(point, index){
-          const value = dataset.data[index];
-          ctx.fillText(value, point.x, point.y - 12);
-        });
-      });
-
-      ctx.restore();
-    }
-  };
-
-  currentChart = new Chart(chartCtx, {
-    type: "line",
-    data: {
-      labels: ["Hero", "Satış Sayfası", "WhatsApp", "Satış"],
-      datasets: [
+  currentChart = new Chart(ctx,{
+    type:"line",
+    data:{
+      labels:["Hero","Satış Sayfası","WhatsApp","Satış"],
+      datasets:[
         {
-          label: "Hero’dan Satışa Geçiş",
-          data: [8, 6, 4, 1],
-          tension: 0.4
+          label:"Hero",
+          data:[8,6,4,1],
+          tension:0.4
         },
         {
-          label: "Alt Section’dan Satışa Geçiş",
-          data: [3, 2, 1, 0],
-          tension: 0.4
+          label:"Alt Section",
+          data:[3,2,1,0],
+          tension:0.4
         }
       ]
     },
-    options: {
-      responsive: true,
-      interaction: {
-        mode: "index",
-        intersect: false
+    options:{
+      responsive:true,
+      interaction:{mode:"index",intersect:false},
+      plugins:{
+        legend:{display:true},
+        tooltip:{enabled:true}
       },
-      plugins: {
-        legend: { display: true },
-        tooltip: {
-          enabled: true,
-          callbacks: {
-            label: function(context){
-              return context.dataset.label + ": " + context.raw + " kişi";
-            }
-          }
-        }
-      },
-      scales: {
-        y: { beginAtZero: true }
-      }
-    },
-    plugins: [pointLabelPlugin]
+      scales:{y:{beginAtZero:true}}
+    }
   });
 
-  document.getElementById("conversionInfo").innerHTML =
-    "Hero dönüşüm: %12.5 | Alt section dönüşüm: %33.3";
+  document.getElementById("conversionInfo").innerText =
+    "Hero: %12.5 | Alt: %33.3";
 }
 
-  openDetail(
-    "Ziyaretçi Analizi",
-    120,
-    420,
-    310,
-    "20:00–22:00",
-    "Ziyaretçi trafiği analiz ediliyor."
-  );
+/* ===== PANEL ===== */
+function openDetail(title,today,week,lastWeek,peak,text){
+  document.getElementById("detailPanel").style.display="block";
+  document.getElementById("detailTitle").innerText=title;
+  document.getElementById("detailToday").innerText=today;
+  document.getElementById("detailWeek").innerText=week;
+  document.getElementById("detailLastWeek").innerText=lastWeek;
+  document.getElementById("detailPeakHour").innerText=peak;
+  document.getElementById("detailContent").innerText=text;
+}
+
+/* ===== FAKE DATA ===== */
+function loadFakeData(){
+  document.getElementById("visitors").innerText=120;
+  document.getElementById("whatsapp").innerText=4;
+  document.getElementById("sales").innerText=1;
+  document.getElementById("track").innerText=15;
+}
+
+/* ===== CLICKLER ===== */
+
+document.getElementById("cardVisitors").onclick=function(){
+  openDetail("Ziyaretçi",120,420,310,"20:00","Trafik artıyor");
 
   drawChart(
-    ["12:00","14:00","16:00","18:00","20:00","22:00"],
-    [10, 25, 18, 40, 60, 45],
-    "Saatlik Trafik"
+    ["12","14","16","18","20"],
+    [10,25,18,40,60],
+    "Ziyaretçi"
   );
-
 };
 
-document.getElementById("cardWhatsapp").onclick = function(){
-
-  openDetail(
-    "WhatsApp’a Geçiş Analizi",
-    "Geçiş: 4",
-    "Bu hafta: 17",
-    "Geçen hafta: 9",
-    "En yoğun: 20:00–22:00",
-    "İlgi var ama kullanıcı karar aşamasında."
-  );
+document.getElementById("cardWhatsapp").onclick=function(){
+  openDetail("WhatsApp","4","17","9","20:00","İlgi var");
 
   drawChart(
-    ["Görüntüleme","Tıklama","WhatsApp","Cevap"],
-    [120, 30, 4, 1],
+    ["Görüntüleme","Tıklama","WA"],
+    [120,30,4],
     "Funnel"
   );
-
 };
 
-document.getElementById("cardSales").onclick = function(){
-
-  openDetail(
-    "Satışa Geçiş Analizi",
-    "Hero: 8 | Alt: 3",
-    "Toplam: 11",
-    "Geçen hafta: 6",
-    "En hızlı: 7 sn",
-    "Hero güçlü, alt section kullanıcıyı ikna etmiyor."
-  );
+document.getElementById("cardSales").onclick=function(){
+  openDetail("Satış","Hero 8","11","6","7 sn","Alt zayıf");
 
   drawSalesChart();
-
 };
 
-document.getElementById("cardTrack").onclick = function(){
-
-  openDetail(
-    "Kargo Takip Analizi",
-    "Bugün: 15",
-    "Bu hafta: 41",
-    "Geçen hafta: 22",
-    "18:00–23:00",
-    "Kargo takip kullanımı yüksek. Bu alan güven ihtiyacının arttığını gösteriyor."
-  );
+document.getElementById("cardTrack").onclick=function(){
+  openDetail("Kargo","15","41","22","18:00","Güven artışı");
 
   drawChart(
-    ["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"],
-    [3, 5, 4, 8, 12, 6, 3],
-    "Haftalık Takip Kullanımı"
+    ["Pzt","Sal","Çar","Per","Cum"],
+    [3,5,4,8,12],
+    "Takip"
   );
-
 };
-document.addEventListener("DOMContentLoaded", function(){
+
+document.addEventListener("DOMContentLoaded",function(){
   loadFakeData();
 });
 
