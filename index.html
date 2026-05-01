@@ -309,14 +309,35 @@ function openDetail(title,today,week,lastWeek,peak,text){
 
 /* ===== FAKE DATA ===== */
 function loadFakeData(){
-  document.getElementById("visitors").innerText=120;
-  document.getElementById("whatsapp").innerText=4;
-  document.getElementById("sales").innerText=1;
-  document.getElementById("track").innerText=15;
+  const visitors = 120;
+  const whatsapp = 4;
+  const sales = 1;
+  const track = 15;
+
+  document.getElementById("visitors").innerText = visitors;
+  document.getElementById("whatsapp").innerText = whatsapp;
+  document.getElementById("sales").innerText = sales;
+  document.getElementById("track").innerText = track;
+
+  document.getElementById("pageViews").innerText = visitors;
+  document.getElementById("trackingSubmit").innerText = track;
+  document.getElementById("conversionRate").innerText =
+    ((whatsapp / visitors) * 100).toFixed(1) + "%";
+  document.getElementById("dropOff").innerText = visitors - whatsapp;
 
   document.getElementById("alertContent").innerText =
     "⚠️ İlgi var ama WhatsApp düşük → Conversion sorunu";
-}
+
+  document.getElementById("carrierList").innerHTML =
+    '<div class="row"><strong>BOX NOW</strong> — 9 kez</div>' +
+    '<div class="row"><strong>YunExpress</strong> — 4 kez</div>' +
+    '<div class="row"><strong>DPD</strong> — 2 kez</div>';
+
+  document.getElementById("eventList").innerHTML =
+    '<div class="row"><strong>page_view</strong><br><span class="small">Ana sayfa — bugün</span></div>' +
+    '<div class="row"><strong>whatsapp_click</strong><br><span class="small">Satış sayfası — bugün</span></div>' +
+    '<div class="row"><strong>tracking_submit</strong><br><span class="small">Kargo takip — bugün</span></div>';
+} 
 
 /* ===== CLICKLER ===== */
 
