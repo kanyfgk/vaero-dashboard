@@ -449,13 +449,16 @@ function openDetail(title, today, week, lastWeek, peakHour, content){
 let currentChart = null;
 
 function drawChart(labels, values, labelName){
-  const ctx = document.getElementById("detailChart").getContext("2d");
+  let currentChart = null;
+
+function drawChart(labels, values, labelName){
+  const chartCtx = document.getElementById("detailChart").getContext("2d");
 
   if(currentChart){
     currentChart.destroy();
   }
 
-  currentChart = new Chart(ctx, {
+  currentChart = new Chart(chartCtx, {
     type: "line",
     data: {
       labels: labels,
@@ -490,7 +493,7 @@ function drawChart(labels, values, labelName){
 }
 
 function drawSalesChart(){
-  const ctx = document.getElementById("detailChart").getContext("2d");
+  const chartCtx = document.getElementById("detailChart").getContext("2d");
 
   if(currentChart){
     currentChart.destroy();
@@ -517,7 +520,7 @@ function drawSalesChart(){
     }
   };
 
-  currentChart = new Chart(ctx, {
+  currentChart = new Chart(chartCtx, {
     type: "line",
     data: {
       labels: ["Hero", "Satış Sayfası", "WhatsApp", "Satış"],
@@ -560,81 +563,7 @@ function drawSalesChart(){
 
   document.getElementById("conversionInfo").innerHTML =
     "Hero dönüşüm: %12.5 | Alt section dönüşüm: %33.3";
-
-  
-function drawSalesChart(){
-
-  const ctx = document.getElementById("detailChart").getContext("2d");
-
-  if(currentChart){
-    currentChart.destroy();
-  }
-
-  const pointLabelPlugin = {
-    id: "pointLabelPlugin",
-    afterDatasetsDraw(chart){
-      const {ctx} = chart;
-      ctx.save();
-      ctx.font = "12px Arial";
-      ctx.fillStyle = "#222";
-      ctx.textAlign = "center";
-
-      chart.data.datasets.forEach(function(dataset, datasetIndex){
-        const meta = chart.getDatasetMeta(datasetIndex);
-
-        meta.data.forEach(function(point, index){
-          const value = dataset.data[index];
-          ctx.fillText(value, point.x, point.y - 10);
-        });
-      });
-
-      ctx.restore();
-    }
-  };
-
-  currentChart = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: ["Hero", "Satış Sayfası", "WhatsApp", "Satış"],
-      datasets: [
-        {
-          label: "Hero’dan Satışa Geçiş",
-          data: [8, 6, 4, 1],
-          tension: 0.4
-        },
-        {
-          label: "Alt Section’dan Satışa Geçiş",
-          data: [3, 2, 1, 0],
-          tension: 0.4
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { display: true }
-      },
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      }
-    },
-    plugins: [pointLabelPlugin]
-  });
-  const ctx = document.getElementById("detailChart").getContext("2d");
-  currentChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: labelName,
-        data: values,
-        tension: 0.4
-      }]
-    }
-  });
-document.getElementById("cardVisitors").onclick = function(){
+}
 
   openDetail(
     "Ziyaretçi Analizi",
