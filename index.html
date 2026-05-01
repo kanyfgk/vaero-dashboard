@@ -449,36 +449,118 @@ function openDetail(title, today, week, lastWeek, peakHour, content){
 let currentChart = null;
 
 function drawChart(labels, values, labelName){
-
   const ctx = document.getElementById("detailChart").getContext("2d");
 
   if(currentChart){
-
     currentChart.destroy();
-
   }
 
   currentChart = new Chart(ctx, {
-
-    type: 'line',
-
+    type: "line",
     data: {
-
       labels: labels,
-
       datasets: [{
-
         label: labelName,
-
         data: values,
-
         tension: 0.4
-
       }]
-
+    },
+    options: {
+      responsive: true,
+      interaction: {
+        mode: "index",
+        intersect: false
+      },
+      plugins: {
+        legend: { display: true },
+        tooltip: {
+          enabled: true,
+          callbacks: {
+            label: function(context){
+              return context.dataset.label + ": " + context.raw + " kişi";
+            }
+          }
+        }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
     }
-
   });
+}
+
+function drawSalesChart(){
+  const ctx = document.getElementById("detailChart").getContext("2d");
+
+  if(currentChart){
+    currentChart.destroy();
+  }
+
+  const pointLabelPlugin = {
+    id: "pointLabelPlugin",
+    afterDatasetsDraw(chart){
+      const {ctx} = chart;
+      ctx.save();
+      ctx.font = "bold 12px Arial";
+      ctx.fillStyle = "#000";
+      ctx.textAlign = "center";
+
+      chart.data.datasets.forEach(function(dataset, datasetIndex){
+        const meta = chart.getDatasetMeta(datasetIndex);
+        meta.data.forEach(function(point, index){
+          const value = dataset.data[index];
+          ctx.fillText(value, point.x, point.y - 12);
+        });
+      });
+
+      ctx.restore();
+    }
+  };
+
+  currentChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: ["Hero", "Satış Sayfası", "WhatsApp", "Satış"],
+      datasets: [
+        {
+          label: "Hero’dan Satışa Geçiş",
+          data: [8, 6, 4, 1],
+          tension: 0.4
+        },
+        {
+          label: "Alt Section’dan Satışa Geçiş",
+          data: [3, 2, 1, 0],
+          tension: 0.4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: {
+        mode: "index",
+        intersect: false
+      },
+      plugins: {
+        legend: { display: true },
+        tooltip: {
+          enabled: true,
+          callbacks: {
+            label: function(context){
+              return context.dataset.label + ": " + context.raw + " kişi";
+            }
+          }
+        }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    },
+    plugins: [pointLabelPlugin]
+  });
+
+  document.getElementById("conversionInfo").innerHTML =
+    "Hero dönüşüm: %12.5 | Alt section dönüşüm: %33.3";
+}
 
 }
 function drawSalesChart(){
