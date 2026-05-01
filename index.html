@@ -98,6 +98,37 @@ a{
   box-shadow:0 2px 6px rgba(0,0,0,0.1);
   font-size:14px;
 }
+  .detail-layout{
+  display:flex;
+  gap:30px;
+  align-items:flex-start;
+}
+
+.chart-area{
+  flex:2;
+}
+
+.device-panel{
+  flex:1;
+  background:#f8f8f8;
+  padding:20px;
+  border-radius:12px;
+}
+
+.device-panel h4{
+  margin-bottom:12px;
+}
+
+.device-bar{
+  height:12px;
+  border-radius:6px;
+  margin-bottom:10px;
+}
+  @media(max-width:900px){
+  .detail-layout{
+    flex-direction:column;
+  }
+}
 </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -148,8 +179,19 @@ a{
     <div id="detailContent">
       Bir karta tıklayınca detay burada açılacak.
     </div>
-    <canvas id="detailChart" style="margin-top:20px;max-height:260px;"></canvas>
+    <div class="detail-layout">
+  <div class="chart-area">
+    <canvas id="detailChart"></canvas>
     <div id="conversionInfo" style="margin-top:15px;font-size:14px;color:#333;"></div>
+  </div>
+
+  <div class="device-panel">
+    <h4>Cihaz Dağılımı</h4>
+    <div id="deviceStats">
+      Veri bekleniyor...
+    </div>
+  </div>
+</div>
   </div>
 </div>
 <h1>VAERO Dashboard</h1>
