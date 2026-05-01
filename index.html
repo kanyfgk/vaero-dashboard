@@ -317,46 +317,47 @@ function loadFakeData(){
 
 /* ===== CLICKLER ===== */
 
-document.getElementById("cardVisitors").onclick=function(){
-  openDetail("Ziyaretçi",120,420,310,"20:00","Trafik artıyor");
-
-  drawChart(
-    ["12","14","16","18","20"],
-    [10,25,18,40,60],
-    "Ziyaretçi"
-  );
-};
-
-document.getElementById("cardWhatsapp").onclick=function(){
-  openDetail("WhatsApp","4","17","9","20:00","İlgi var");
-
-  drawChart(
-    ["Görüntüleme","Tıklama","WA"],
-    [120,30,4],
-    "Funnel"
-  );
-};
-
-document.getElementById("cardSales").onclick=function(){
-  openDetail("Satış","Hero 8","11","6","7 sn","Alt zayıf");
-
-  drawSalesChart();
-};
-
-document.getElementById("cardTrack").onclick=function(){
-  openDetail("Kargo","15","41","22","18:00","Güven artışı");
-
-  drawChart(
-    ["Pzt","Sal","Çar","Per","Cum"],
-    [3,5,4,8,12],
-    "Takip"
-  );
-};
-
 document.addEventListener("DOMContentLoaded",function(){
-  loadFakeData();
-});
 
+  loadFakeData();
+
+  document.getElementById("cardVisitors").onclick=function(){
+    openDetail("Ziyaretçi",120,420,310,"20:00","Trafik artıyor");
+
+    drawChart(
+      ["12","14","16","18","20"],
+      [10,25,18,40,60],
+      "Ziyaretçi"
+    );
+  };
+
+  document.getElementById("cardWhatsapp").onclick=function(){
+    openDetail("WhatsApp","4","17","9","20:00","İlgi var");
+
+    drawChart(
+      ["Görüntüleme","Tıklama","WA"],
+      [120,30,4],
+      "Funnel"
+    );
+  };
+
+  document.getElementById("cardSales").onclick=function(){
+    openDetail("Satış","Hero 8","11","6","7 sn","Alt zayıf");
+
+    drawSalesChart();
+  };
+
+  document.getElementById("cardTrack").onclick=function(){
+    openDetail("Kargo","15","41","22","18:00","Güven artışı");
+
+    drawChart(
+      ["Pzt","Sal","Çar","Per","Cum"],
+      [3,5,4,8,12],
+      "Takip"
+    );
+  };
+
+});
 </script>
 
 </body>
