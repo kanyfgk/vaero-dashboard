@@ -219,10 +219,16 @@ a{
 </div>
 
 <script>
+const API_URL = "https://wpfiszzxlwkmaqcqmywa.supabase.co/rest/v1/events?select=id,created_at,event_name,page,meta&order=created_at.asc";
+const API_KEY = "sb_publishable_eTspasegbb8PbX2hEGMD5w_ggrWRuYN";
 
+let allEvents = [];
 let currentChart = null;
 
-/* ===== CHART TEMİZLE ===== */
+function $(id){
+  return document.getElementById(id);
+}
+
 function clearChart(){
   if(currentChart){
     currentChart.destroy();
@@ -230,171 +236,305 @@ function clearChart(){
   }
 }
 
-/* ===== NORMAL GRAFİK ===== */
-function drawChart(labels, values, label){
-  clearChart();
-
-  const ctx = document.getElementById("detailChart").getContext("2d");
-
-  currentChart = new Chart(ctx,{
-    type:"line",
-    data:{
-      labels:labels,
-      datasets:[{
-        label:label,
-        data:values,
-        tension:0.4
-      }]
-    },
-    options:{
-      responsive:true,
-      interaction:{mode:"index",intersect:false},
-      plugins:{
-        legend:{display:true},
-        tooltip:{enabled:true}
-      },
-      scales:{y:{beginAtZero:true}}
-    }
-  });
+function getEventCount(name){
+  return allEvents.filter(e => e.event_name === name).length;
 }
 
-/* ===== SATIŞ GRAFİĞİ ===== */
-function drawSalesChart(){
+function groupByDay(events, eventName){
+  const grouped = {};
+
+  events
+    .filter(e => e.event_name === eventName)
+    .forEach(e => {
+      const day = new Date(e.created_at).toISOString().slice(0,10);
+      grouped[day] = (grouped[day] || 0) + 1;
+    });
+
+  return grouped;
+}
+
+function drawLineChart(labels, datasets){
   clearChart();
 
-  const ctx = document.getElementById("detailChart").getContext("2d");
+  const ctx = $("detailChart").getContext("2d");
 
   currentChart = new Chart(ctx,{
     type:"line",
-    data:{
-      labels:["Hero","Satış Sayfası","WhatsApp","Satış"],
-      datasets:[
-        {
-          label:"Hero",
-          data:[8,6,4,1],
-          tension:0.4
-        },
-        {
-          label:"Alt Section",
-          data:[3,2,1,0],
-          tension:0.4
+    data:{ labels, datasets },
+    options:{
+      responsive:true,
+      interaction:{ mode:"index", intersect:false },
+      plugins:{
+        legend:{ display:true },
+        tooltip:{
+          enabled:true,
+          callbacks:{
+            label:function(context){
+              return context.dataset.label + ": " + context.raw;
+            }
+          }
         }
-      ]
-    },
-    options:{
-      responsive:true,
-      interaction:{mode:"index",intersect:false},
-      plugins:{
-        legend:{display:true},
-        tooltip:{enabled:true}
       },
-      scales:{y:{beginAtZero:true}}
+      scales:{ y:{ beginAtZero:true } }
+    }
+  });
+}
+
+function openDetail(title,today,week,lastWeek,peak,text){
+  $("detailPanel").style.display="block";
+  $("detailTitle").innerText=title;
+  $("detailToday").innerText=today;
+  $("detailWeek").innerText=week;
+  $("detailLastWeek").innerText=lastWeek;
+  $("detailPeakHour").innerText=peak;
+  $("detailContent").innerText=text;
+}
+
+async function loadData(){
+  $("status").innerText = "Supabase verisi alınıyor...";
+
+  try{
+    const response = await fetch(API_URL,{
+      method:"GET",
+      headers:{
+        apikey:API_KEY,
+        Authorization:"Bearer " + API_KEY,
+        "Content-Type":"application/json"
+      }
+    });
+
+    const data = await response.json();
+
+    if(!Array.isArray(data)){
+      $("status").innerText = "Veri okunamadı.";
+      return;
+    }
+
+    allEvents = data;
+
+    updateDashboard();
+    $("status").innerText = data.length > 0
+      ? "Gerçek veri aktif: " + data.length + " kayıt"
+      : "Henüz gerçek veri yok. Sistem satış verisi bekliyor.";
+
+  }catch(error){
+    $("status").innerText = "Supabase bağlantı hatası: " + error.message;
+  }
+}
+
+function updateDashboard(){
+  const pageViews = getEventCount("page_view");
+  const salesClicks = getEventCount("sales_page_click");
+  const whatsappClicks = getEventCount("whatsapp_click");
+  const trackingSubmits = getEventCount("tracking_submit");
+  const sales = getEventCount("sale");
+
+  $("visitors").innerText = pageViews;
+  $("whatsapp").innerText = whatsappClicks;
+  $("sales").innerText = sales;
+  $("track").innerText = trackingSubmits;
+
+  $("pageViews").innerText = pageViews;
+  $("trackingSubmit").innerText = trackingSubmits;
+  $("conversionRate").innerText = pageViews > 0 ? ((sales / pageViews) * 100).toFixed(1) + "%" : "0%";
+  $("dropOff").innerText = Math.max(pageViews - whatsappClicks,0);
+
+  $("alertContent").innerText =
+    pageViews === 0 ? "Henüz veri yok." :
+    whatsappClicks === 0 ? "⚠️ Trafik var ama WhatsApp geçişi yok." :
+    sales === 0 ? "⚠️ İlgi var ama satış kaydı yok." :
+    "✅ Sistem veri topluyor.";
+
+  updateCarrierList();
+  updateEventList();
+  updateAIReport();
+}
+
+function updateCarrierList(){
+  const carriers = {};
+
+  allEvents.forEach(e => {
+    if(e.event_name === "tracking_submit"){
+      const carrier = e.meta && e.meta.carrier ? e.meta.carrier : "unknown";
+      carriers[carrier] = (carriers[carrier] || 0) + 1;
     }
   });
 
-  document.getElementById("conversionInfo").innerText =
-    "Hero: %12.5 | Alt: %33.3";
+  const entries = Object.entries(carriers).sort((a,b)=>b[1]-a[1]);
+
+  if(entries.length === 0){
+    $("carrierList").innerHTML = "Henüz kargo takip verisi yok.";
+    return;
+  }
+
+  $("carrierList").innerHTML = entries.map(e =>
+    '<div class="row"><strong>' + e[0] + '</strong> — ' + e[1] + ' kez</div>'
+  ).join("");
 }
 
-/* ===== PANEL ===== */
-function openDetail(title,today,week,lastWeek,peak,text){
-  document.getElementById("detailPanel").style.display="block";
-  document.getElementById("detailTitle").innerText=title;
-  document.getElementById("detailToday").innerText=today;
-  document.getElementById("detailWeek").innerText=week;
-  document.getElementById("detailLastWeek").innerText=lastWeek;
-  document.getElementById("detailPeakHour").innerText=peak;
-  document.getElementById("detailContent").innerText=text;
+function updateEventList(){
+  const latest = allEvents.slice().reverse().slice(0,15);
+
+  if(latest.length === 0){
+    $("eventList").innerHTML = "Henüz event yok.";
+    return;
+  }
+
+  $("eventList").innerHTML = latest.map(e =>
+    '<div class="row"><strong>' + e.event_name + '</strong><br><span class="small">' +
+    (e.page || "/") + " — " + (e.created_at || "-") +
+    '</span></div>'
+  ).join("");
 }
 
-/* ===== FAKE DATA ===== */
-function loadFakeData(){
-  const visitors = 120;
-  const whatsapp = 4;
-  const sales = 1;
-  const track = 15;
+function updateAIReport(){
+  const pageViews = getEventCount("page_view");
+  const whatsapp = getEventCount("whatsapp_click");
+  const sales = getEventCount("sale");
+  const tracking = getEventCount("tracking_submit");
 
-  document.getElementById("visitors").innerText = visitors;
-  document.getElementById("whatsapp").innerText = whatsapp;
-  document.getElementById("sales").innerText = sales;
-  document.getElementById("track").innerText = track;
+  $("ai-loss").innerText =
+    pageViews === 0 ? "Henüz analiz için veri yok." :
+    whatsapp === 0 ? "En büyük kayıp: ziyaretçi var ama WhatsApp geçişi yok." :
+    sales === 0 ? "En büyük kayıp: WhatsApp ilgisi var ama satış kaydı yok." :
+    "Satış akışı çalışıyor. Detaylı optimizasyon için daha fazla veri gerekli.";
 
-  document.getElementById("pageViews").innerText = visitors;
-  document.getElementById("trackingSubmit").innerText = track;
-  document.getElementById("conversionRate").innerText =
-    ((whatsapp / visitors) * 100).toFixed(1) + "%";
-  document.getElementById("dropOff").innerText = visitors - whatsapp;
+  $("ai-opportunity").innerText =
+    tracking > 0 ? "Kargo takip kullanımı güven ihtiyacını gösteriyor. Bu alan satış güvenini artırmak için kullanılmalı." :
+    "İlk fırsat: satış sayfası ve WhatsApp geçişlerini ölçmek.";
 
-  document.getElementById("alertContent").innerText =
-    "⚠️ İlgi var ama WhatsApp düşük → Conversion sorunu";
+  $("ai-behavior").innerText =
+    "Ziyaretçi: " + pageViews +
+    " | WhatsApp: " + whatsapp +
+    " | Satış: " + sales +
+    " | Kargo takip: " + tracking;
 
-  document.getElementById("carrierList").innerHTML =
-    '<div class="row"><strong>BOX NOW</strong> — 9 kez</div>' +
-    '<div class="row"><strong>YunExpress</strong> — 4 kez</div>' +
-    '<div class="row"><strong>DPD</strong> — 2 kez</div>';
+  $("ai-actions").innerHTML =
+    "<li>Satış sayfası tıklamasını net takip et.</li>" +
+    "<li>WhatsApp butonunu satış niyetiyle ölç.</li>" +
+    "<li>Her gerçek satışta sale eventi gönder.</li>" +
+    "<li>Genel trend grafiğini günlük takip et.</li>";
+}
 
-  document.getElementById("eventList").innerHTML =
-    '<div class="row"><strong>page_view</strong><br><span class="small">Ana sayfa — bugün</span></div>' +
-    '<div class="row"><strong>whatsapp_click</strong><br><span class="small">Satış sayfası — bugün</span></div>' +
-    '<div class="row"><strong>tracking_submit</strong><br><span class="small">Kargo takip — bugün</span></div>';
-  document.getElementById("ai-loss").innerText =
-    "En büyük kayıp: Ziyaretçi var ama WhatsApp’a geçen oran düşük.";
+function getTodayCount(eventName){
+  const today = new Date().toISOString().slice(0,10);
+  return allEvents.filter(e =>
+    e.event_name === eventName &&
+    new Date(e.created_at).toISOString().slice(0,10) === today
+  ).length;
+}
 
-  document.getElementById("ai-opportunity").innerText =
-    "En güçlü fırsat: Hero alanı hızlı karar üretiyor.";
+function setupClicks(){
+  $("cardVisitors").onclick = function(){
+    const grouped = groupByDay(allEvents,"page_view");
+    const labels = Object.keys(grouped);
+    const values = Object.values(grouped);
 
-  document.getElementById("ai-behavior").innerText =
-    "Kullanıcı davranışı: Trafik var, kargo takip kullanımı güven ihtiyacını gösteriyor.";
+    openDetail(
+      "Ziyaretçi Analizi",
+      getTodayCount("page_view"),
+      getEventCount("page_view"),
+      "-",
+      "-",
+      labels.length ? "Gerçek ziyaretçi verisi gösteriliyor." : "Henüz ziyaretçi verisi yok."
+    );
 
-  document.getElementById("ai-actions").innerHTML =
-    "<li>Hero CTA metnini daha net hale getir.</li>" +
-    "<li>WhatsApp butonunu daha görünür yap.</li>" +
-    "<li>Alt section metinlerini sadeleştir.</li>" +
-    "<li>Kargo takip alanını güven unsuru olarak kullan.</li>";
-} 
+    drawLineChart(labels.length ? labels : ["Veri yok"], [{
+      label:"Ziyaretçi",
+      data: values.length ? values : [0],
+      tension:0.4
+    }]);
+  };
 
-/* ===== CLICKLER ===== */
+  $("cardWhatsapp").onclick = function(){
+    const grouped = groupByDay(allEvents,"whatsapp_click");
+    const labels = Object.keys(grouped);
+    const values = Object.values(grouped);
+
+    openDetail(
+      "WhatsApp Geçiş Analizi",
+      getTodayCount("whatsapp_click"),
+      getEventCount("whatsapp_click"),
+      "-",
+      "-",
+      labels.length ? "Gerçek WhatsApp geçişleri gösteriliyor." : "Henüz WhatsApp verisi yok."
+    );
+
+    drawLineChart(labels.length ? labels : ["Veri yok"], [{
+      label:"WhatsApp",
+      data: values.length ? values : [0],
+      tension:0.4
+    }]);
+  };
+
+  $("cardSales").onclick = function(){
+    drawSalesTrend();
+  };
+
+  $("cardTrack").onclick = function(){
+    const grouped = groupByDay(allEvents,"tracking_submit");
+    const labels = Object.keys(grouped);
+    const values = Object.values(grouped);
+
+    openDetail(
+      "Kargo Takip Analizi",
+      getTodayCount("tracking_submit"),
+      getEventCount("tracking_submit"),
+      "-",
+      "-",
+      labels.length ? "Gerçek kargo takip kullanımı gösteriliyor." : "Henüz kargo takip verisi yok."
+    );
+
+    drawLineChart(labels.length ? labels : ["Veri yok"], [{
+      label:"Kargo Takip",
+      data: values.length ? values : [0],
+      tension:0.4
+    }]);
+  };
+}
+
+function drawSalesTrend(){
+  const salesByDay = groupByDay(allEvents,"sale");
+  const whatsappByDay = groupByDay(allEvents,"whatsapp_click");
+
+  const labels = Array.from(new Set([
+    ...Object.keys(salesByDay),
+    ...Object.keys(whatsappByDay)
+  ])).sort();
+
+  const salesValues = labels.map(day => salesByDay[day] || 0);
+  const whatsappValues = labels.map(day => whatsappByDay[day] || 0);
+
+  openDetail(
+    "Genel Satış Trend Grafiği",
+    getTodayCount("sale"),
+    getEventCount("sale"),
+    "-",
+    "-",
+    labels.length ? "Satış başladıktan sonra yükseliş/düşüş burada net görünecek." : "Henüz satış verisi yok. Grafik hazır bekliyor."
+  );
+
+  drawLineChart(labels.length ? labels : ["Veri yok"], [
+    {
+      label:"Satış",
+      data:salesValues.length ? salesValues : [0],
+      tension:0.4
+    },
+    {
+      label:"WhatsApp Geçişi",
+      data:whatsappValues.length ? whatsappValues : [0],
+      tension:0.4
+    }
+  ]);
+
+  $("conversionInfo").innerText =
+    labels.length ? "Satış trendi gerçek veriye göre hesaplanıyor." : "Henüz satış verisi yok.";
+}
 
 document.addEventListener("DOMContentLoaded",function(){
-
-  loadFakeData();
-
-  document.getElementById("cardVisitors").onclick=function(){
-    openDetail("Ziyaretçi",120,420,310,"20:00","Trafik artıyor");
-
-    drawChart(
-      ["12","14","16","18","20"],
-      [10,25,18,40,60],
-      "Ziyaretçi"
-    );
-  };
-
-  document.getElementById("cardWhatsapp").onclick=function(){
-    openDetail("WhatsApp","4","17","9","20:00","İlgi var");
-
-    drawChart(
-      ["Görüntüleme","Tıklama","WA"],
-      [120,30,4],
-      "Funnel"
-    );
-  };
-
-  document.getElementById("cardSales").onclick=function(){
-    openDetail("Satış","Hero 8","11","6","7 sn","Alt zayıf");
-
-    drawSalesChart();
-  };
-
-  document.getElementById("cardTrack").onclick=function(){
-    openDetail("Kargo","15","41","22","18:00","Güven artışı");
-
-    drawChart(
-      ["Pzt","Sal","Çar","Per","Cum"],
-      [3,5,4,8,12],
-      "Takip"
-    );
-  };
-
+  setupClicks();
+  loadData();
+  setInterval(loadData,30000);
 });
 </script>
 
