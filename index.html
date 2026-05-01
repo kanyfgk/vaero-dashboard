@@ -543,6 +543,7 @@ function drawSalesChart(){
   });
 
 }
+  const ctx = document.getElementById("detailChart").getContext("2d");
   currentChart = new Chart(ctx, {
     type: 'line',
     data: {
