@@ -629,6 +629,11 @@ $("conversionRate").innerText = pageViews > 0
 $("dropOff").innerText = Math.max(pageViews - whatsappClicks, 0);
     $("status").innerText = "Gerçek veri aktif: " + data.length + " kayıt";
 
+$("alertContent").innerText =
+  data.length > 0
+    ? "Sistem aktif • " + data.length + " event alındı"
+    : "Veri gelmiyor • event akışı kontrol edilmeli";
+
   }catch(error){
     $("status").innerText = "Bağlantı hatası: " + error.message;
   }
