@@ -563,6 +563,31 @@ document.addEventListener("DOMContentLoaded",function(){
     `)
     .join("");
 }
+  function renderCarriers(){
+  const container = $("carrierList");
+
+  const carriers = {};
+
+  allEvents.forEach(e => {
+    if(e.event_name === "carrier_selected"){
+      const name = e.meta && e.meta.carrier ? e.meta.carrier : "unknown";
+      carriers[name] = (carriers[name] || 0) + 1;
+    }
+  });
+
+  const entries = Object.entries(carriers).sort((a,b) => b[1] - a[1]);
+
+  if(entries.length === 0){
+    container.innerText = "Henüz kargo seçimi yok.";
+    return;
+  }
+
+  container.innerHTML = entries.map(([name,count]) => `
+    <div class="row">
+      <strong>${name}</strong> - ${count} seçim
+    </div>
+  `).join("");
+}
   async function loadData(){
   $("status").innerText = "Supabase verisi alınıyor...";
 
@@ -585,6 +610,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
     allEvents = data;
     renderLastEvents(data);
+    renderCarriers();
 
     $("visitors").innerText = getEventCount("page_view");
     $("whatsapp").innerText = getEventCount("whatsapp_click");
