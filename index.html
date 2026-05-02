@@ -385,25 +385,7 @@ function openDetail(title,today,week,lastWeek,peak,text){
       `;
     }).join("");
 }
-  function renderDeviceStats(events){
-  const box = document.getElementById("deviceStats");
-  if(!box) return;
-
-  const devices = {
-    mobile: 0,
-    tablet: 0,
-    desktop: 0,
-    tv: 0,
-    unknown: 0
-  };
-
-  events.forEach(function(item){
-    const device = item.meta && item.meta.device ? item.meta.device : "unknown";
-    if(devices[device] !== undefined){
-      devices[device]++;
-    }else{
-      devices.unknown++;
-    }
+  
   });
 
   const total = Object.values(devices).reduce((a,b)=>a+b,0);
@@ -583,9 +565,7 @@ function setupClicks(){
       "-",
       labels.length ? "Gerçek ziyaretçi verisi gösteriliyor." : "Henüz ziyaretçi verisi yok."
     );
-renderDeviceStats(allEvents.filter(function(e){
-  return e.event_name === "page_view";
-}));
+
     drawLineChart(labels.length ? labels : ["Veri yok"], [{
       label:"Ziyaretçi",
       data: values.length ? values : [0],
