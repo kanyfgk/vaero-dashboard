@@ -570,7 +570,17 @@ document.addEventListener("DOMContentLoaded",function(){
     $("whatsapp").innerText = getEventCount("whatsapp_click");
     $("sales").innerText = getEventCount("sale");
     $("track").innerText = getEventCount("tracking_submit");
+const pageViews = getEventCount("page_view");
+const whatsappClicks = getEventCount("whatsapp_click");
+const trackingSubmits = getEventCount("tracking_submit");
+const sales = getEventCount("sale");
 
+$("pageViews").innerText = pageViews;
+$("trackingSubmit").innerText = trackingSubmits;
+$("conversionRate").innerText = pageViews > 0 
+  ? ((sales / pageViews) * 100).toFixed(1) + "%" 
+  : "0%";
+$("dropOff").innerText = Math.max(pageViews - whatsappClicks, 0);
     $("status").innerText = "Gerçek veri aktif: " + data.length + " kayıt";
 
   }catch(error){
