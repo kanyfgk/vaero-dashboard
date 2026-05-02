@@ -330,8 +330,8 @@ function openDetail(title,today,week,lastWeek,peak,text){
   $("detailLastWeek").innerText=lastWeek;
   $("detailPeakHour").innerText=peak;
   $("detailContent").innerText=text;
-  const box = document.getElementById("deviceStats");
-  if(!box) return;
+
+  const box = $("deviceStats");
 
   const devices = {
     mobile: 0,
@@ -341,51 +341,15 @@ function openDetail(title,today,week,lastWeek,peak,text){
     unknown: 0
   };
 
-  events.forEach(function(item){
+  // 🔥 DOĞRU DATA KAYNAĞI
+  allEvents.forEach(function(item){
     const device = item.meta && item.meta.device ? item.meta.device : "unknown";
 
     if(devices[device] !== undefined){
       devices[device]++;
-    }else{
+    } else {
       devices.unknown++;
     }
-  });
-
-  const total = Object.values(devices).reduce(function(a,b){
-    return a + b;
-  }, 0);
-
-  if(total === 0){
-    box.innerHTML = "Cihaz verisi yok.";
-    return;
-  }
-
-  box.innerHTML = Object.entries(devices)
-    .filter(function(entry){
-      return entry[1] > 0;
-    })
-    .map(function(entry){
-      const name = entry[0];
-      const count = entry[1];
-      const percent = Math.round((count / total) * 100);
-
-      return `
-        <div style="margin-bottom:14px">
-          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
-            <span>${name}</span>
-            <strong>${percent}%</strong>
-          </div>
-
-          <div style="height:10px;background:#e5e5e5;border-radius:20px;overflow:hidden">
-            <div style="width:${percent}%;height:100%;background:#253044;border-radius:20px"></div>
-          </div>
-
-          <div style="font-size:12px;color:#777;margin-top:4px">${count} ziyaret</div>
-        </div>
-      `;
-    }).join("");
-}
-  
   });
 
   const total = Object.values(devices).reduce((a,b)=>a+b,0);
@@ -396,8 +360,8 @@ function openDetail(title,today,week,lastWeek,peak,text){
   }
 
   box.innerHTML = Object.entries(devices)
-    .filter(function(entry){ return entry[1] > 0; })
-    .map(function(entry){
+    .filter(entry => entry[1] > 0)
+    .map(entry => {
       const name = entry[0];
       const count = entry[1];
       const percent = Math.round((count / total) * 100);
@@ -415,88 +379,6 @@ function openDetail(title,today,week,lastWeek,peak,text){
         </div>
       `;
     }).join("");
-}
-
-async function loadData(){
-  $("status").innerText = "Supabase verisi alınıyor...";
-
-  try{
-    const response = await fetch(API_URL,{
-      method:"GET",
-      headers:{
-        apikey:API_KEY,
-        Authorization:"Bearer " + API_KEY,
-        "Content-Type":"application/json"
-      }
-    });
-
-    const data = await response.json();
-
-    if(!Array.isArray(data)){
-      $("status").innerText = "Veri okunamadı.";
-      return;
-    }
-
-    allEvents = data;
-
-    updateDashboard();
-    $("status").innerText = data.length > 0
-      ? "Gerçek veri aktif: " + data.length + " kayıt"
-      : "Henüz gerçek veri yok. Sistem satış verisi bekliyor.";
-
-  }catch(error){
-    $("status").innerText = "Supabase bağlantı hatası: " + error.message;
-  }
-}
-
-function updateDashboard(){
-  const pageViews = getEventCount("page_view");
-  const salesClicks = getEventCount("sales_page_click");
-  const whatsappClicks = getEventCount("whatsapp_click");
-  const trackingSubmits = getEventCount("tracking_submit");
-  const sales = getEventCount("sale");
-
-  $("visitors").innerText = pageViews;
-  $("whatsapp").innerText = whatsappClicks;
-  $("sales").innerText = sales;
-  $("track").innerText = trackingSubmits;
-
-  $("pageViews").innerText = pageViews;
-  $("trackingSubmit").innerText = trackingSubmits;
-  $("conversionRate").innerText = pageViews > 0 ? ((sales / pageViews) * 100).toFixed(1) + "%" : "0%";
-  $("dropOff").innerText = Math.max(pageViews - whatsappClicks,0);
-
-  $("alertContent").innerText =
-    pageViews === 0 ? "Henüz veri yok." :
-    whatsappClicks === 0 ? "⚠️ Trafik var ama WhatsApp geçişi yok." :
-    sales === 0 ? "⚠️ İlgi var ama satış kaydı yok." :
-    "✅ Sistem veri topluyor.";
-
-  updateCarrierList();
-  updateEventList();
-  updateAIReport();
-}
-
-function updateCarrierList(){
-  const carriers = {};
-
-  allEvents.forEach(e => {
-    if(e.event_name === "tracking_submit"){
-      const carrier = e.meta && e.meta.carrier ? e.meta.carrier : "unknown";
-      carriers[carrier] = (carriers[carrier] || 0) + 1;
-    }
-  });
-
-  const entries = Object.entries(carriers).sort((a,b)=>b[1]-a[1]);
-
-  if(entries.length === 0){
-    $("carrierList").innerHTML = "Henüz kargo takip verisi yok.";
-    return;
-  }
-
-  $("carrierList").innerHTML = entries.map(e =>
-    '<div class="row"><strong>' + e[0] + '</strong> — ' + e[1] + ' kez</div>'
-  ).join("");
 }
 
 function updateEventList(){
