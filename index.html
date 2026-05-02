@@ -539,11 +539,47 @@ function drawSalesTrend(){
   $("conversionInfo").innerText =
     labels.length ? "Satış trendi gerçek veriye göre hesaplanıyor." : "Henüz satış verisi yok.";
 }
+function renderLastEvents(events) {
+  const container = document.getElementById("lastEvents");
 
+  if (!events || events.length === 0) {
+    container.innerText = "Veri yok";
+    return;
+  }
+
+  container.innerHTML = events
+    .slice(-10)
+    .reverse()
+    .map(e => `
+      <div style="padding:8px;border-bottom:1px solid #eee;">
+        <b>${e.event_name}</b> - ${new Date(e.timestamp).toLocaleString()}
+      </div>
+    `)
+    .join("");
+}
 document.addEventListener("DOMContentLoaded",function(){
   setupClicks();
   loadData();
+  setInterval(loadData,30000);
 });
+  function renderLastEvents(events) {
+  const container = document.getElementById("eventList");
+
+  if (!events || events.length === 0) {
+    container.innerText = "Veri yok";
+    return;
+  }
+
+  container.innerHTML = events
+    .slice(-10)
+    .reverse()
+    .map(e => `
+      <div style="padding:8px;border-bottom:1px solid #eee;">
+        <b>${e.event_name}</b> - ${new Date(e.created_at).toLocaleString()}
+      </div>
+    `)
+    .join("");
+}
   async function loadData(){
   $("status").innerText = "Supabase verisi alınıyor...";
 
@@ -565,6 +601,8 @@ document.addEventListener("DOMContentLoaded",function(){
     }
 
     allEvents = data;
+    renderLastEvents(data);
+    updateDashboard();
 
     $("visitors").innerText = getEventCount("page_view");
     $("whatsapp").innerText = getEventCount("whatsapp_click");
