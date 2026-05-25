@@ -146,6 +146,38 @@ a{
     flex-direction:column;
   }
 }
+
+  #alertBox{
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.03));
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 20px 45px rgba(0,0,0,.35);
+  backdrop-filter:blur(18px);
+  position:relative;
+  overflow:hidden;
+}
+
+#alertBox::before{
+  content:"";
+  position:absolute;
+  inset:-40%;
+  background:
+    radial-gradient(circle, rgba(201,168,104,.18), transparent 42%);
+  animation:glowMove 8s linear infinite;
+}
+
+@keyframes glowMove{
+  0%{transform:translateX(-10%) translateY(-10%)}
+  50%{transform:translateX(10%) translateY(10%)}
+  100%{transform:translateX(-10%) translateY(-10%)}
+}
+
+#alertBox b,
+#alertContent{
+  position:relative;
+  z-index:2;
+}
+  
 </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
