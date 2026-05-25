@@ -29,9 +29,9 @@ a{
 }
 .grid{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:14px;
-  margin-bottom:18px;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:18px;
+  margin-bottom:24px;
 }
 .card,.section{
   background:rgba(255,255,255,.07);
@@ -51,11 +51,14 @@ a{
 }
 .small{font-size:12px;color:#777}
 .status{
-  padding:10px;
-  margin-bottom:14px;
-  border-radius:12px;
-  background:#eee;
+  padding:16px;
+  margin-bottom:18px;
+  border-radius:18px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
   font-size:13px;
+  color:#d8d3cb;
+  backdrop-filter:blur(12px);
 }
 @media(max-width:900px){.grid{grid-template-columns:1fr 1fr}}
   .ai-report{
@@ -96,12 +99,21 @@ a{
   margin-bottom:6px;
 }
   .card{
-  background:#fff;
-  padding:16px;
-  border-radius:10px;
+  background:rgba(255,255,255,.08);
+  padding:18px;
+  border-radius:18px;
   min-width:120px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
   font-size:14px;
+  transition:.25s ease;
+  cursor:pointer;
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.card:hover{
+  transform:translateY(-4px);
+  background:rgba(255,255,255,.11);
+  box-shadow:0 20px 40px rgba(0,0,0,.35);
 }
   .detail-layout{
   display:flex;
