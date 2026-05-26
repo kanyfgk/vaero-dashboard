@@ -495,7 +495,15 @@ function drawLineChart(labels, datasets){
       responsive:true,
       interaction:{ mode:"index", intersect:false },
       plugins:{
-        legend:{ display:true },
+        legend:{
+  display:true,
+  labels:{
+    color:"#f4efe6",
+    font:{
+      size:13
+    }
+  }
+},
         tooltip:{
           enabled:true,
           callbacks:{
@@ -505,7 +513,17 @@ function drawLineChart(labels, datasets){
           }
         }
       },
-      scales:{ y:{ beginAtZero:true } }
+      scales:{
+  x:{
+    ticks:{ color:"#cfc7bb" },
+    grid:{ color:"rgba(255,255,255,.05)" }
+  },
+  y:{
+    beginAtZero:true,
+    ticks:{ color:"#cfc7bb" },
+    grid:{ color:"rgba(255,255,255,.05)" }
+  }
+}
     }
   });
 }
@@ -886,6 +904,11 @@ document.addEventListener("DOMContentLoaded",function(){
     $("whatsapp").innerText = getEventCount("whatsapp_click");
     $("sales").innerText = getEventCount("sale");
     $("track").innerText = getEventCount("tracking_submit");
+    
+const pageViews = getEventCount("page_view");
+const whatsappClicks = getEventCount("whatsapp_click");
+const trackingSubmits = getEventCount("tracking_submit");
+const sales = getEventCount("sale");
     $("whatsappRate").innerText = pageViews > 0
   ? "Ziyaretçiden WhatsApp'a %" + ((whatsappClicks / pageViews) * 100).toFixed(1)
   : "Veri bekleniyor";
@@ -896,11 +919,7 @@ $("salesRate").innerText = pageViews > 0
 
 $("trackRate").innerText = pageViews > 0
   ? "Takip kullanımı %" + ((trackingSubmits / pageViews) * 100).toFixed(1)
-  : "Veri bekleniyor";
-const pageViews = getEventCount("page_view");
-const whatsappClicks = getEventCount("whatsapp_click");
-const trackingSubmits = getEventCount("tracking_submit");
-const sales = getEventCount("sale");
+  : "Veri bekleniyor";  
 
 $("pageViews").innerText = pageViews;
 $("trackingSubmit").innerText = trackingSubmits;
