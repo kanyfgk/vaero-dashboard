@@ -73,20 +73,24 @@ a{
 }
 
 .ai-box{
-  background:#fff;
-  padding:20px;
-  border-radius:12px;
-  box-shadow:0 5px 20px rgba(0,0,0,0.05);
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.08);
+  padding:22px;
+  border-radius:20px;
+  box-shadow:0 16px 35px rgba(0,0,0,.22);
+  backdrop-filter:blur(14px);
 }
 
 .ai-box h3{
-  font-size:16px;
-  margin-bottom:10px;
+  font-size:15px;
+  margin-bottom:12px;
+  color:#f4efe6;
 }
 
 .ai-box p{
   font-size:14px;
-  color:#666;
+  color:#d8d3cb;
+  line-height:1.5;
 }
 
 .ai-box ul{
@@ -95,8 +99,9 @@ a{
 
 .ai-box li{
   font-size:14px;
-  color:#444;
-  margin-bottom:6px;
+  color:#d8d3cb;
+  margin-bottom:7px;
+  line-height:1.45;
 }
   .card{
   background:rgba(255,255,255,.08);
@@ -296,6 +301,80 @@ a{
   font-size:11px;
   color:#a9a296;
 }
+
+  .funnel{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  flex-wrap:wrap;
+  margin-top:18px;
+}
+
+.funnel div{
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;
+  padding:18px 24px;
+  min-width:150px;
+  text-align:center;
+}
+
+.funnel span{
+  display:block;
+  font-size:12px;
+  color:#c9c1b5;
+  margin-bottom:8px;
+}
+
+.funnel b{
+  font-size:34px;
+  color:#fff;
+}
+
+  .pulseBox h2{
+  margin-top:0;
+}
+
+.pulseGrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:16px;
+}
+
+.pulseGrid div{
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;
+  padding:18px;
+}
+
+.pulseGrid span{
+  display:block;
+  font-size:12px;
+  color:#c9c1b5;
+  margin-bottom:8px;
+}
+
+.pulseGrid b{
+  display:block;
+  font-size:22px;
+  color:#fff;
+}
+
+  .heatmapGrid{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:10px;
+}
+
+.heatCell{
+  padding:14px 10px;
+  border-radius:14px;
+  text-align:center;
+  font-size:13px;
+  border:1px solid rgba(255,255,255,.06);
+  transition:.25s ease;
+}
   
 </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -387,6 +466,24 @@ a{
   <a href="#" target="_blank">Satış Sayfası Linki</a>
 </div>
 
+  <div class="section pulseBox">
+  <h2>Live System Pulse</h2>
+  <div class="pulseGrid">
+    <div>
+      <span>Son Event</span>
+      <b id="lastEventName">-</b>
+    </div>
+    <div>
+      <span>Son Aktivite</span>
+      <b id="lastEventTime">-</b>
+    </div>
+    <div>
+      <span>Sistem Isısı</span>
+      <b id="systemHeat">Bekleniyor</b>
+    </div>
+  </div>
+</div>
+
 <div id="status" class="status">Demo veri aktif — gerçek Supabase bağlantısı sonraki adımda bağlanacak.</div>
 
 <div class="grid">
@@ -394,6 +491,89 @@ a{
   <div class="card"><div class="label">Tracking Submit</div><div id="trackingSubmit" class="value">0</div></div>
   <div class="card"><div class="label">Conversion Rate</div><div id="conversionRate" class="value">0%</div></div>
   <div class="card"><div class="label">Drop-off</div><div id="dropOff" class="value">0</div></div>
+</div>
+
+  <div class="section">
+  <h2>VAERO Funnel</h2>
+    <div id="trafficQuality" style="
+margin-top:14px;
+padding:14px;
+border-radius:16px;
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.08);
+font-size:14px;
+color:#d8d3cb;
+">
+Trafik kalitesi analiz ediliyor...
+</div>
+    <div id="riskWarning" style="
+margin-top:12px;
+padding:14px;
+border-radius:16px;
+background:rgba(201,168,104,.12);
+border:1px solid rgba(201,168,104,.22);
+font-size:14px;
+color:#f4efe6;
+">
+Risk analizi bekleniyor...
+</div>
+    <div id="intentScoreBox" style="
+margin-top:12px;
+padding:16px;
+border-radius:18px;
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.08);
+">
+<div style="font-size:13px;color:#c9c1b5;margin-bottom:8px">
+Satın Alma Niyeti
+</div>
+
+      <div id="dailyActionBox" style="
+margin-top:12px;
+padding:16px;
+border-radius:18px;
+background:rgba(0,0,0,.18);
+border:1px solid rgba(255,255,255,.08);
+">
+<div style="font-size:13px;color:#c9c1b5;margin-bottom:8px">
+Bugünün Operasyon Aksiyonu
+</div>
+<div id="dailyActionText" style="font-size:15px;color:#f4efe6;line-height:1.5">
+Aksiyon bekleniyor...
+</div>
+</div>
+
+<div style="
+height:14px;
+background:rgba(255,255,255,.08);
+border-radius:20px;
+overflow:hidden;
+">
+<div id="intentBar" style="
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#c9a868,#f4efe6);
+border-radius:20px;
+transition:.4s ease;
+"></div>
+</div>
+
+<div id="intentText" style="
+margin-top:10px;
+font-size:14px;
+color:#f4efe6;
+">
+Analiz bekleniyor...
+</div>
+</div>
+  <div class="funnel">
+    <div><span>Ziyaretçi</span><b id="funnelVisitors">0</b></div>
+    <div>→</div>
+    <div><span>WhatsApp</span><b id="funnelWhatsapp">0</b></div>
+    <div>→</div>
+    <div><span>Satış</span><b id="funnelSales">0</b></div>
+  </div>
+  <p id="funnelInsight" class="small">Funnel verisi bekleniyor...</p>
 </div>
 
 <div class="section">
@@ -442,6 +622,19 @@ a{
     <button onclick="askVaeroAI()">Sor</button>
   </div>
 </section>
+
+  <div class="section">
+  <h2>Canlı İçgörü Akışı</h2>
+  <div id="insightTimeline">
+    İçgörü bekleniyor...
+  </div>
+</div>
+
+  <div class="section">
+  <h2>Aktivite Yoğunluğu</h2>
+  <div id="heatmapGrid" class="heatmapGrid"></div>
+</div>
+  
 <div class="section">
   <h2>Son Eventler</h2>
   <div id="eventList">Yükleniyor...</div>
@@ -840,16 +1033,105 @@ document.addEventListener("DOMContentLoaded",function(){
     return;
   }
 
+  function eventLabel(name){
+    if(name === "page_view") return "Ziyaret";
+    if(name === "whatsapp_click") return "WhatsApp Geçişi";
+    if(name === "tracking_submit") return "Kargo Takip";
+    if(name === "carrier_selected") return "Kargo Şirketi Seçimi";
+    if(name === "sale") return "Satış";
+    return name;
+  }
+
   container.innerHTML = events
-    .slice(-10)
+    .slice(-12)
     .reverse()
     .map(e => `
-      <div style="padding:8px;border-bottom:1px solid #eee;">
-        <b>${e.event_name}</b> - ${new Date(e.created_at).toLocaleString()}
+      <div class="row">
+        <strong>${eventLabel(e.event_name)}</strong><br>
+        <span class="small">${new Date(e.created_at).toLocaleString("tr-TR")}</span>
       </div>
     `)
     .join("");
 }
+
+  function renderHeatmap(){
+
+  const box = $("heatmapGrid");
+
+  const hours = {};
+
+  for(let i=0;i<24;i++){
+    hours[i] = 0;
+  }
+
+  allEvents.forEach(e=>{
+    const h = new Date(e.created_at).getHours();
+    hours[h]++;
+  });
+
+  const max = Math.max(...Object.values(hours),1);
+
+  box.innerHTML = Object.entries(hours).map(([hour,count])=>{
+
+    const opacity = (count / max).toFixed(2);
+
+    return `
+      <div class="heatCell"
+        style="
+          background:rgba(201,168,104,${opacity});
+          color:white;
+        ">
+        <strong>${hour}:00</strong><br>
+        ${count}
+      </div>
+    `;
+  }).join("");
+}
+
+  function renderInsights(){
+    renderHeatmap();
+
+  const box = $("insightTimeline");
+
+  const insights = [];
+
+  const pageViews = getEventCount("page_view");
+  const whatsapp = getEventCount("whatsapp_click");
+  const tracking = getEventCount("tracking_submit");
+  const sales = getEventCount("sale");
+
+  if(pageViews > 100){
+    insights.push("• Trafik hacmi yükselmeye başladı.");
+  }
+
+  if(whatsapp > 10){
+    insights.push("• WhatsApp ilgisi oluşuyor.");
+  }
+
+  if(tracking > whatsapp){
+    insights.push("• İnsanlar satın almadan önce güven arıyor.");
+  }
+
+  if(sales === 0 && whatsapp > 5){
+    insights.push("• İlgi var fakat kapanış eksik.");
+  }
+
+  if(insights.length === 0){
+    insights.push("• Sistem henüz yeterli veri toplamadı.");
+  }
+
+  box.innerHTML = insights.map(i => `
+    <div style="
+      padding:12px 0;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      color:#d8d3cb;
+      font-size:14px;
+    ">
+      ${i}
+    </div>
+  `).join("");
+}
+  
   function renderCarriers(){
   const container = $("carrierList");
 
@@ -869,11 +1151,23 @@ document.addEventListener("DOMContentLoaded",function(){
     return;
   }
 
-  container.innerHTML = entries.map(([name,count]) => `
-    <div class="row">
-      <strong>${name}</strong> - ${count} seçim
-    </div>
-  `).join("");
+  const max = entries[0][1];
+
+  container.innerHTML = entries.map(([name,count]) => {
+    const percent = Math.round((count / max) * 100);
+
+    return `
+      <div style="margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px">
+          <strong>${name}</strong>
+          <span>${count} seçim</span>
+        </div>
+        <div style="height:10px;background:rgba(255,255,255,.08);border-radius:20px;overflow:hidden">
+          <div style="width:${percent}%;height:100%;background:linear-gradient(90deg,#c9a868,#f4efe6);border-radius:20px"></div>
+        </div>
+      </div>
+    `;
+  }).join("");
 }
   async function loadData(){
   $("status").innerText = "Supabase verisi alınıyor...";
@@ -899,6 +1193,7 @@ document.addEventListener("DOMContentLoaded",function(){
     renderLastEvents(data);
     renderCarriers();
     updateAIReport();
+    renderInsights();
 
     $("visitors").innerText = getEventCount("page_view");
     $("whatsapp").innerText = getEventCount("whatsapp_click");
@@ -927,19 +1222,130 @@ $("conversionRate").innerText = pageViews > 0
   ? ((sales / pageViews) * 100).toFixed(1) + "%" 
   : "0%";
 $("dropOff").innerText = Math.max(pageViews - whatsappClicks, 0);
-    $("status").innerText = "Gerçek veri aktif: " + data.length + " kayıt";
+    $("funnelVisitors").innerText = pageViews;
+$("funnelWhatsapp").innerText = whatsappClicks;
+$("funnelSales").innerText = sales;
 
-$("alertContent").innerText =
-  data.length > 0
-    ? "Sistem aktif • " + data.length + " event alındı"
-    : "Veri gelmiyor • event akışı kontrol edilmeli";
+$("funnelInsight").innerText =
+  sales === 0 && whatsappClicks > 0
+    ? "İlgi var, fakat satış kaydı yok. WhatsApp sonrası güven ve kapanış süreci güçlendirilmeli."
+    : "Funnel akışı izleniyor.";
 
-  }catch(error){
-    $("status").innerText = "Bağlantı hatası: " + error.message;
-  }
+let qualityText = "";
+
+const whatsappRate =
+  pageViews > 0
+    ? (whatsappClicks / pageViews) * 100
+    : 0;
+
+if(whatsappRate >= 15){
+  qualityText = "Yüksek kaliteli trafik algılandı. Ziyaretçiler satış niyeti taşıyor.";
+}else if(whatsappRate >= 7){
+  qualityText = "Orta kaliteli trafik. İlgi var fakat satış psikolojisi güçlendirilebilir.";
+}else{
+  qualityText = "Düşük kaliteli trafik. İçerik yanlış kitle çekiyor olabilir.";
 }
 
-  function askVaeroAI(){
+$("trafficQuality").innerText = qualityText;
+
+let riskText = "";
+const dropOff = Math.max(pageViews - whatsappClicks, 0);
+
+if(sales === 0 && whatsappClicks >= 10){
+  riskText = "⚠️ WhatsApp ilgisi var ama satış kaydı yok. Kapanış mesajları ve güven kanıtı güçlendirilmeli.";
+}else if(dropOff > 200){
+  riskText = "⚠️ Yüksek drop-off var. Ziyaretçilerin büyük kısmı WhatsApp'a geçmeden çıkıyor.";
+}else if(trackingSubmits > whatsappClicks){
+  riskText = "⚠️ Kargo takip ilgisi WhatsApp geçişinden yüksek. Güven/teslimat bilgisi daha görünür olmalı.";
+}else{
+  riskText = "Sistem dengeli görünüyor. Kritik risk algılanmadı.";
+}
+
+$("riskWarning").innerText = riskText;
+
+let intentScore = 0;
+intentScore += whatsappClicks * 4;
+intentScore += trackingSubmits * 2;
+intentScore += sales * 10;
+
+if(pageViews > 0){
+  intentScore = Math.min(100, Math.round(intentScore / pageViews * 10));
+}
+
+$("intentBar").style.width = intentScore + "%";
+
+if(intentScore >= 70){
+  $("intentText").innerText = "Yüksek satın alma niyeti algılandı.";
+}else if(intentScore >= 40){
+  $("intentText").innerText = "Orta seviye satın alma ilgisi mevcut.";
+}else{
+  $("intentText").innerText = "Zayıf satın alma niyeti. Trafik soğuk olabilir.";
+}
+
+let dailyAction = "";
+
+if(sales === 0 && whatsappClicks >= 10){
+  dailyAction = "Bugün öncelik: WhatsApp kapanışını güçlendir. Story’de güven, teslimat ve gerçek ürün hissini artır.";
+}else if(whatsappRate < 7 && pageViews > 100){
+  dailyAction = "Bugün öncelik: CTA zayıf. Reels açıklaması ve story yönlendirmesi daha net olmalı.";
+}else if(trackingSubmits > 30){
+  dailyAction = "Bugün öncelik: teslimat güveni. Kargo/takip sürecini story’de açık ve sakin şekilde göster.";
+}else{
+  dailyAction = "Bugün sistem dengeli. Bir sonraki içerikte atmosfer hissini koruyup WhatsApp geçişini yumuşak artır.";
+}
+
+$("dailyActionText").innerText = dailyAction;
+    
+  sales === 0 && whatsappClicks > 0
+    ? "İlgi var, fakat satış kaydı yok. WhatsApp sonrası güven ve kapanış süreci güçlendirilmeli."
+    : "Funnel akışı izleniyor.";
+    const latestEvent = data[data.length - 1];
+
+if(latestEvent){
+  $("lastEventName").innerText = latestEvent.event_name || "-";
+
+  const diffMs = new Date() - new Date(latestEvent.created_at);
+  const diffMin = Math.max(0, Math.round(diffMs / 60000));
+
+  $("lastEventTime").innerText =
+    diffMin < 1 ? "Az önce" : diffMin + " dk önce";
+
+  if(whatsappClicks >= 20){
+    $("systemHeat").innerText = "Sıcak";
+  }else if(pageViews >= 100){
+    $("systemHeat").innerText = "Aktif";
+  }else{
+    $("systemHeat").innerText = "Düşük";
+  }
+}
+    $("status").innerText = "Gerçek veri aktif: " + data.length + " kayıt";
+
+if(data.length > 0){
+
+  const whatsappRateText =
+    pageViews > 0
+      ? ((whatsappClicks / pageViews) * 100).toFixed(1)
+      : "0.0";
+
+  $("alertContent").innerHTML =
+    "Sistem aktif • " + data.length + " event alındı<br>" +
+    pageViews + " ziyaretçi • " +
+    whatsappClicks + " WhatsApp geçişi • %" +
+    whatsappRateText + " geçiş oranı";
+
+}else{
+  $("alertContent").innerText =
+    "Veri gelmiyor • event akışı kontrol edilmeli";
+}
+
+}catch(error){
+  $("status").innerText =
+    "Bağlantı hatası: " + error.message;
+}
+
+}
+
+function askVaeroAI(){
   const input = $("aiQuestion");
   const box = $("aiChatBox");
 
