@@ -1370,20 +1370,51 @@ function askVaeroAI(){
   const tracking = getEventCount("tracking_submit");
 
   let answer = "";
+  const lowerQ = question.toLowerCase();
 
-  if(question.toLowerCase().includes("bugün")){
-    answer =
-      "Bugün için en net okuma: ziyaretçi " + getTodayCount("page_view") +
-      ", WhatsApp geçişi " + getTodayCount("whatsapp_click") +
-      ", kargo takip kullanımı " + getTodayCount("tracking_submit") +
-      ". Satış eventi henüz " + getTodayCount("sale") + ".";
-  } else {
-    answer =
-      "Genel tablo: " + pageViews + " ziyaretçi, " +
-      whatsapp + " WhatsApp geçişi, " +
-      tracking + " kargo takip kullanımı ve " +
-      sales + " satış eventi görünüyor. Şu an ana kayıp noktası ziyaretçiden WhatsApp’a geçiş oranı.";
-  }
+  if(lowerQ.includes("bugün")){
+  answer =
+    "Bugün için en net okuma: ziyaretçi " + getTodayCount("page_view") +
+    ", WhatsApp geçişi " + getTodayCount("whatsapp_click") +
+    ", kargo takip kullanımı " + getTodayCount("tracking_submit") +
+    ". Satış eventi henüz " + getTodayCount("sale") + ".";
+}
+
+else if(lowerQ.includes("satış")){
+  answer =
+    "Toplam satış eventi: " + sales +
+    ". Satış dönüşümü şu an %" +
+    (pageViews > 0
+      ? ((sales / pageViews) * 100).toFixed(1)
+      : "0") +
+    ".";
+}
+
+else if(lowerQ.includes("whatsapp")){
+  answer =
+    "WhatsApp geçişleri şu an " + whatsapp +
+    ". Ziyaretçiden geçiş oranı %" +
+    (pageViews > 0
+      ? ((whatsapp / pageViews) * 100).toFixed(1)
+      : "0") +
+    ".";
+}
+
+else if(lowerQ.includes("risk")){
+  answer = $("riskWarning").innerText;
+}
+
+else if(lowerQ.includes("trafik")){
+  answer = $("trafficQuality").innerText;
+}
+
+else{
+  answer =
+    "Genel tablo: " + pageViews + " ziyaretçi, " +
+    whatsapp + " WhatsApp geçişi, " +
+    tracking + " kargo takip kullanımı ve " +
+    sales + " satış eventi görünüyor. Şu an ana kayıp noktası ziyaretçiden WhatsApp’a geçiş oranı.";
+}
 
   box.innerHTML += `
     <div class="ai-message bot">
@@ -1394,6 +1425,18 @@ function askVaeroAI(){
   input.value = "";
   box.scrollTop = box.scrollHeight;
 }
+
+  document.addEventListener("DOMContentLoaded", function(){
+  const aiInput = $("aiQuestion");
+
+  if(aiInput){
+    aiInput.addEventListener("keydown", function(e){
+      if(e.key === "Enter"){
+        askVaeroAI();
+      }
+    });
+  }
+});
   
 </script>
 
