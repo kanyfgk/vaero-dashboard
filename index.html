@@ -1353,10 +1353,7 @@ function askVaeroAI(){
   if(!input || !box) return;
 
   const question = input.value.trim();
-
-  if(!question){
-    return;
-  }
+  if(!question) return;
 
   box.innerHTML += `
     <div class="ai-message user">
@@ -1368,53 +1365,94 @@ function askVaeroAI(){
   const whatsapp = getEventCount("whatsapp_click");
   const sales = getEventCount("sale");
   const tracking = getEventCount("tracking_submit");
-
-  let answer = "";
   const lowerQ = question.toLowerCase();
 
-  if(lowerQ.includes("bugün")){
-  answer =
-    "Bugün için en net okuma: ziyaretçi " + getTodayCount("page_view") +
-    ", WhatsApp geçişi " + getTodayCount("whatsapp_click") +
-    ", kargo takip kullanımı " + getTodayCount("tracking_submit") +
-    ". Satış eventi henüz " + getTodayCount("sale") + ".";
-}
+  let answer = "";
 
-else if(lowerQ.includes("satış")){
-  answer =
-    "Toplam satış eventi: " + sales +
-    ". Satış dönüşümü şu an %" +
-    (pageViews > 0
-      ? ((sales / pageViews) * 100).toFixed(1)
-      : "0") +
-    ".";
-}
+  if(
+    lowerQ.includes("merhaba") ||
+    lowerQ.includes("selam") ||
+    lowerQ.includes("kanka")
+  ){
+    answer =
+      "Buradayım. VAERO dashboard verilerini okuyabilirim. Bana bugün, satış, WhatsApp, risk, trafik, analiz veya aksiyon yazabilirsin.";
+  }
 
-else if(lowerQ.includes("whatsapp")){
-  answer =
-    "WhatsApp geçişleri şu an " + whatsapp +
-    ". Ziyaretçiden geçiş oranı %" +
-    (pageViews > 0
-      ? ((whatsapp / pageViews) * 100).toFixed(1)
-      : "0") +
-    ".";
-}
+  else if(
+    lowerQ.includes("bugün") ||
+    lowerQ.includes("bugünün") ||
+    lowerQ.includes("veri") ||
+    lowerQ.includes("rapor")
+  ){
+    answer =
+      "Bugün için en net okuma: ziyaretçi " + getTodayCount("page_view") +
+      ", WhatsApp geçişi " + getTodayCount("whatsapp_click") +
+      ", kargo takip kullanımı " + getTodayCount("tracking_submit") +
+      ". Satış eventi henüz " + getTodayCount("sale") + ".";
+  }
 
-else if(lowerQ.includes("risk")){
-  answer = $("riskWarning").innerText;
-}
+  else if(lowerQ.includes("satış")){
+    answer =
+      "Toplam satış eventi: " + sales +
+      ". Satış dönüşümü şu an %" +
+      (pageViews > 0 ? ((sales / pageViews) * 100).toFixed(1) : "0") +
+      ".";
+  }
 
-else if(lowerQ.includes("trafik")){
-  answer = $("trafficQuality").innerText;
-}
+  else if(lowerQ.includes("whatsapp")){
+    answer =
+      "WhatsApp geçişleri şu an " + whatsapp +
+      ". Ziyaretçiden geçiş oranı %" +
+      (pageViews > 0 ? ((whatsapp / pageViews) * 100).toFixed(1) : "0") +
+      ".";
+  }
 
-else{
-  answer =
-    "Genel tablo: " + pageViews + " ziyaretçi, " +
-    whatsapp + " WhatsApp geçişi, " +
-    tracking + " kargo takip kullanımı ve " +
-    sales + " satış eventi görünüyor. Şu an ana kayıp noktası ziyaretçiden WhatsApp’a geçiş oranı.";
-}
+  else if(lowerQ.includes("risk")){
+    answer = $("riskWarning").innerText;
+  }
+
+  else if(lowerQ.includes("trafik")){
+    answer = $("trafficQuality").innerText;
+  }
+
+  else if(
+    lowerQ.includes("aksiyon") ||
+    lowerQ.includes("ne yapalım") ||
+    lowerQ.includes("öneri")
+  ){
+    answer = $("dailyActionText").innerText;
+  }
+
+  else if(
+    lowerQ.includes("analiz") ||
+    lowerQ.includes("yorumla") ||
+    lowerQ.includes("durum")
+  ){
+    if(sales === 0 && whatsapp > 10){
+      answer =
+        "İlgi oluşuyor fakat satış kapanışı eksik. İnsanlar sisteme giriyor ama son güven eşiğini geçemiyor olabilir.";
+    }
+    else if(whatsapp > 0 && tracking > whatsapp){
+      answer =
+        "Kargo takip ilgisi WhatsApp’tan yüksek. Kullanıcılar önce güven arıyor. Teslimat süreci daha görünür anlatılmalı.";
+    }
+    else if(pageViews > 200 && whatsapp < 10){
+      answer =
+        "Yüksek trafik var fakat düşük geçiş alınıyor. İçerik yanlış kitle çekiyor olabilir.";
+    }
+    else{
+      answer =
+        "Sistem şu an dengeli görünüyor. Atmosfer hissi korunarak dönüşüm artırılabilir.";
+    }
+  }
+
+  else{
+    answer =
+      "Genel tablo: " + pageViews + " ziyaretçi, " +
+      whatsapp + " WhatsApp geçişi, " +
+      tracking + " kargo takip kullanımı ve " +
+      sales + " satış eventi görünüyor.";
+  }
 
   box.innerHTML += `
     <div class="ai-message bot">
@@ -1425,7 +1463,6 @@ else{
   input.value = "";
   box.scrollTop = box.scrollHeight;
 }
-
   document.addEventListener("DOMContentLoaded", function(){
   const aiInput = $("aiQuestion");
 
