@@ -123,13 +123,19 @@ a{
 
 .chart-area{
   flex:2;
+  background:rgba(255,255,255,.04);
+  border-radius:18px;
+  padding:20px;
+  border:1px solid rgba(255,255,255,.06);
 }
 
 .device-panel{
   flex:1;
-  background:#f8f8f8;
+  background:rgba(255,255,255,.04);
   padding:20px;
-  border-radius:12px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.06);
+  backdrop-filter:blur(12px);
 }
 
 .device-panel h4{
@@ -177,6 +183,119 @@ a{
   position:relative;
   z-index:2;
 }
+
+  #detailPanel{
+  animation:panelFade .28s ease;
+  transform-origin:top;
+}
+
+@keyframes panelFade{
+  from{
+    opacity:0;
+    transform:translateY(-10px) scale(.98);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+}
+
+  .card.active{
+  background:rgba(201,168,104,.16);
+  border:1px solid rgba(201,168,104,.45);
+  box-shadow:
+    0 0 0 1px rgba(201,168,104,.15),
+    0 20px 45px rgba(0,0,0,.35);
+}
+
+  .ai-chat{
+  margin-top:34px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:22px;
+  padding:24px;
+  box-shadow:0 18px 45px rgba(0,0,0,.28);
+}
+
+.ai-chat p{
+  color:#c9c1b5;
+}
+
+.ai-chat-box{
+  min-height:140px;
+  max-height:260px;
+  overflow:auto;
+  background:rgba(0,0,0,.22);
+  border-radius:18px;
+  padding:16px;
+  margin:18px 0;
+}
+
+.ai-message{
+  padding:12px 14px;
+  border-radius:14px;
+  margin-bottom:10px;
+  font-size:14px;
+  line-height:1.45;
+}
+
+.ai-message.bot{
+  background:rgba(255,255,255,.08);
+  color:#f4efe6;
+}
+
+.ai-message.user{
+  background:rgba(201,168,104,.18);
+  color:#fff;
+  margin-left:auto;
+  max-width:80%;
+}
+
+.ai-chat-input{
+  display:flex;
+  gap:10px;
+}
+
+.ai-chat-input input{
+  flex:1;
+  border:none;
+  outline:none;
+  border-radius:14px;
+  padding:14px;
+  background:rgba(255,255,255,.10);
+  color:white;
+}
+
+.ai-chat-input button{
+  border:none;
+  border-radius:14px;
+  padding:0 20px;
+  background:#c9a868;
+  color:#111;
+  font-weight:700;
+  cursor:pointer;
+}
+
+  .miniLabel{
+  display:block;
+  font-size:12px;
+  color:#c9c1b5;
+  margin-bottom:8px;
+}
+
+.card b{
+  display:block;
+  font-size:26px;
+  color:#fff;
+  margin-bottom:6px;
+}
+
+.card small{
+  display:block;
+  font-size:11px;
+  color:#a9a296;
+}
   
 </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -192,10 +311,29 @@ a{
 
 <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px">
 
-  <div class="card" id="cardVisitors">Ziyaretçiler<br><b id="visitors">0</b></div>
-<div class="card" id="cardWhatsapp">WhatsApp'a Geçenler<br><b id="whatsapp">0</b></div>
-<div class="card" id="cardSales">Satışa Geçiş Analizi<br><b id="sales">0</b></div>
-<div class="card" id="cardTrack">Kargo Takibini Kullananlar<br><b id="track">0</b></div>
+  <div class="card" id="cardVisitors">
+  <span class="miniLabel">Ziyaretçiler</span>
+  <b id="visitors">0</b>
+  <small id="visitorRate">Toplam giriş</small>
+</div>
+
+<div class="card" id="cardWhatsapp">
+  <span class="miniLabel">WhatsApp'a Geçenler</span>
+  <b id="whatsapp">0</b>
+  <small id="whatsappRate">Geçiş oranı hesaplanıyor</small>
+</div>
+
+<div class="card" id="cardSales">
+  <span class="miniLabel">Satışa Geçiş Analizi</span>
+  <b id="sales">0</b>
+  <small id="salesRate">Satış oranı hesaplanıyor</small>
+</div>
+
+<div class="card" id="cardTrack">
+  <span class="miniLabel">Kargo Takibini Kullananlar</span>
+  <b id="track">0</b>
+  <small id="trackRate">Güven sinyali</small>
+</div>
 
 </div>
   <div id="detailPanel" class="section" style="display:none;margin-bottom:20px">
@@ -315,6 +453,7 @@ const API_KEY = "sb_publishable_eTspasegbb8PbX2hEGMD5w_ggrWRuYN";
 
 let allEvents = [];
 let currentChart = null;
+  let activePanel = null;
 
 function $(id){
   return document.getElementById(id);
@@ -372,13 +511,49 @@ function drawLineChart(labels, datasets){
 }
 
 function openDetail(title,today,week,lastWeek,peak,text){
+  document.querySelectorAll(".card").forEach(c=>{
+  c.classList.remove("active");
+});
+  if(activePanel === title){
+    $("detailPanel").style.display = "none";
+    activePanel = null;
+    document.querySelectorAll(".card").forEach(c=>{
+  c.classList.remove("active");
+});
+    clearChart();
+    return true;
+  }
+
+  activePanel = title;
+  if(title === "Ziyaretçi Analizi"){
+  $("cardVisitors").classList.add("active");
+}
+
+if(title === "WhatsApp Geçiş Analizi"){
+  $("cardWhatsapp").classList.add("active");
+}
+
+if(title === "Genel Satış Trend Grafiği"){
+  $("cardSales").classList.add("active");
+}
+
+if(title === "Kargo Takip Analizi"){
+  $("cardTrack").classList.add("active");
+}
   $("detailPanel").style.display="block";
+  setTimeout(()=>{
+  $("detailPanel").scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
+},120);
   $("detailTitle").innerText=title;
   $("detailToday").innerText=today;
   $("detailWeek").innerText=week;
   $("detailLastWeek").innerText=lastWeek;
   $("detailPeakHour").innerText=peak;
   $("detailContent").innerText=text;
+  $("conversionInfo").innerText = "";
 
   const box = $("deviceStats");
 
@@ -475,11 +650,56 @@ function updateAIReport(){
 }
 
 function getTodayCount(eventName){
-  const today = new Date().toISOString().slice(0,10);
+  const now = new Date();
+  const today = now.toISOString().slice(0,10);
+
   return allEvents.filter(e =>
     e.event_name === eventName &&
     new Date(e.created_at).toISOString().slice(0,10) === today
   ).length;
+}
+
+function getWeekCount(eventName){
+  const now = new Date();
+  const sevenDaysAgo = new Date(now);
+  sevenDaysAgo.setDate(now.getDate() - 7);
+
+  return allEvents.filter(e => {
+    const d = new Date(e.created_at);
+    return e.event_name === eventName && d >= sevenDaysAgo && d <= now;
+  }).length;
+}
+
+function getLastWeekCount(eventName){
+  const now = new Date();
+
+  const start = new Date(now);
+  start.setDate(now.getDate() - 14);
+
+  const end = new Date(now);
+  end.setDate(now.getDate() - 7);
+
+  return allEvents.filter(e => {
+    const d = new Date(e.created_at);
+    return e.event_name === eventName && d >= start && d < end;
+  }).length;
+}
+
+function getPeakHour(eventName){
+  const hours = {};
+
+  allEvents
+    .filter(e => e.event_name === eventName)
+    .forEach(e => {
+      const h = new Date(e.created_at).getHours();
+      hours[h] = (hours[h] || 0) + 1;
+    });
+
+  const sorted = Object.entries(hours).sort((a,b) => b[1] - a[1]);
+
+  if(sorted.length === 0) return "-";
+
+  return sorted[0][0] + ":00";
 }
 
 function setupClicks(){
@@ -491,9 +711,9 @@ function setupClicks(){
     openDetail(
       "Ziyaretçi Analizi",
       getTodayCount("page_view"),
-      getEventCount("page_view"),
-      "-",
-      "-",
+      getWeekCount("page_view"),
+getLastWeekCount("page_view"),
+getPeakHour("page_view"),
       labels.length ? "Gerçek ziyaretçi verisi gösteriliyor." : "Henüz ziyaretçi verisi yok."
     );
 
@@ -512,9 +732,9 @@ function setupClicks(){
     openDetail(
       "WhatsApp Geçiş Analizi",
       getTodayCount("whatsapp_click"),
-      getEventCount("whatsapp_click"),
-      "-",
-      "-",
+getWeekCount("whatsapp_click"),
+getLastWeekCount("whatsapp_click"),
+getPeakHour("whatsapp_click"),
       labels.length ? "Gerçek WhatsApp geçişleri gösteriliyor." : "Henüz WhatsApp verisi yok."
     );
 
@@ -537,9 +757,9 @@ function setupClicks(){
     openDetail(
       "Kargo Takip Analizi",
       getTodayCount("tracking_submit"),
-      getEventCount("tracking_submit"),
-      "-",
-      "-",
+getWeekCount("tracking_submit"),
+getLastWeekCount("tracking_submit"),
+getPeakHour("tracking_submit"),
       labels.length ? "Gerçek kargo takip kullanımı gösteriliyor." : "Henüz kargo takip verisi yok."
     );
 
@@ -566,9 +786,9 @@ function drawSalesTrend(){
   openDetail(
     "Genel Satış Trend Grafiği",
     getTodayCount("sale"),
-    getEventCount("sale"),
-    "-",
-    "-",
+getWeekCount("sale"),
+getLastWeekCount("sale"),
+getPeakHour("sale"),
     labels.length ? "Satış başladıktan sonra yükseliş/düşüş burada net görünecek." : "Henüz satış verisi yok. Grafik hazır bekliyor."
   );
 
@@ -660,11 +880,23 @@ document.addEventListener("DOMContentLoaded",function(){
     allEvents = data;
     renderLastEvents(data);
     renderCarriers();
+    updateAIReport();
 
     $("visitors").innerText = getEventCount("page_view");
     $("whatsapp").innerText = getEventCount("whatsapp_click");
     $("sales").innerText = getEventCount("sale");
     $("track").innerText = getEventCount("tracking_submit");
+    $("whatsappRate").innerText = pageViews > 0
+  ? "Ziyaretçiden WhatsApp'a %" + ((whatsappClicks / pageViews) * 100).toFixed(1)
+  : "Veri bekleniyor";
+
+$("salesRate").innerText = pageViews > 0
+  ? "Ziyaretçiden satışa %" + ((sales / pageViews) * 100).toFixed(1)
+  : "Veri bekleniyor";
+
+$("trackRate").innerText = pageViews > 0
+  ? "Takip kullanımı %" + ((trackingSubmits / pageViews) * 100).toFixed(1)
+  : "Veri bekleniyor";
 const pageViews = getEventCount("page_view");
 const whatsappClicks = getEventCount("whatsapp_click");
 const trackingSubmits = getEventCount("tracking_submit");
@@ -687,6 +919,56 @@ $("alertContent").innerText =
     $("status").innerText = "Bağlantı hatası: " + error.message;
   }
 }
+
+  function askVaeroAI(){
+  const input = $("aiQuestion");
+  const box = $("aiChatBox");
+
+  if(!input || !box) return;
+
+  const question = input.value.trim();
+
+  if(!question){
+    return;
+  }
+
+  box.innerHTML += `
+    <div class="ai-message user">
+      ${question}
+    </div>
+  `;
+
+  const pageViews = getEventCount("page_view");
+  const whatsapp = getEventCount("whatsapp_click");
+  const sales = getEventCount("sale");
+  const tracking = getEventCount("tracking_submit");
+
+  let answer = "";
+
+  if(question.toLowerCase().includes("bugün")){
+    answer =
+      "Bugün için en net okuma: ziyaretçi " + getTodayCount("page_view") +
+      ", WhatsApp geçişi " + getTodayCount("whatsapp_click") +
+      ", kargo takip kullanımı " + getTodayCount("tracking_submit") +
+      ". Satış eventi henüz " + getTodayCount("sale") + ".";
+  } else {
+    answer =
+      "Genel tablo: " + pageViews + " ziyaretçi, " +
+      whatsapp + " WhatsApp geçişi, " +
+      tracking + " kargo takip kullanımı ve " +
+      sales + " satış eventi görünüyor. Şu an ana kayıp noktası ziyaretçiden WhatsApp’a geçiş oranı.";
+  }
+
+  box.innerHTML += `
+    <div class="ai-message bot">
+      ${answer}
+    </div>
+  `;
+
+  input.value = "";
+  box.scrollTop = box.scrollHeight;
+}
+  
 </script>
 
 </body>
