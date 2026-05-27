@@ -635,6 +635,21 @@ Analiz bekleniyor...
 </section>
 
   <div class="section">
+  <h2>AI Karar Motoru</h2>
+  <div id="decisionBox" style="
+    padding:16px;
+    border-radius:18px;
+    background:rgba(201,168,104,.12);
+    border:1px solid rgba(201,168,104,.22);
+    color:#f4efe6;
+    line-height:1.6;
+    font-size:14px;
+  ">
+    Karar bekleniyor...
+  </div>
+</div>
+
+  <div class="section">
   <h2>Bugünkü İçerik Operasyonu</h2>
   <div id="contentPlanBox">
     5. video planı bekleniyor...
@@ -667,6 +682,7 @@ let allEvents = [];
   let currentDecision = "";
 let currentChart = null;
   let activePanel = null;
+  let contentMemory = [];
 
 function $(id){
   return document.getElementById(id);
@@ -1139,6 +1155,8 @@ document.addEventListener("DOMContentLoaded",function(){
     currentDecision =
       "Karar Motoru: Sistem stabil. Atmosfer korunarak ölçeklenebilir.";
   }
+
+ $("decisionBox").innerText = currentDecision;   
 }
 
   function updateSystemFocus(){
@@ -1181,19 +1199,19 @@ document.addEventListener("DOMContentLoaded",function(){
 
   if(sales === 0 && whatsapp >= 10){
     plan =
-      "5. video yönü: güven ve kapanış. Ürün hissi, teslimat güveni ve WhatsApp geçişi net gösterilmeli.";
+      "Sonraki içerik yönü: güven ve kapanış. Ürün hissi, teslimat güveni ve WhatsApp geçişi net gösterilmeli.";
   }
   else if(tracking > whatsapp){
     plan =
-      "5. video yönü: teslimat güveni. Kargo/takip süreci story ve reels içinde sakin şekilde anlatılmalı.";
+      "Sonraki içerik yönü: teslimat güveni. Kargo/takip süreci story ve reels içinde sakin şekilde anlatılmalı.";
   }
   else if(pageViews > 100 && whatsapp < 10){
     plan =
-      "5. video yönü: daha güçlü giriş cümlesi. İlk 2 saniye merak ve atmosfer hissi artırılmalı.";
+      "Sonraki içerik yönü: daha güçlü giriş cümlesi. İlk 2 saniye merak ve atmosfer hissi artırılmalı.";
   }
   else{
     plan =
-      "5. video yönü: atmosferi koru. Sabah/akşam sürüş hissi, White Tea atmosferi ve sessiz premium ton devam etmeli.";
+      "Sonraki içerik yönü: atmosferi koru. Sabah/akşam sürüş hissi, White Tea atmosferi ve sessiz premium ton devam etmeli.";
   }
 
   box.innerText = plan;
@@ -1474,6 +1492,12 @@ function askVaeroAI(){
     </div>
   `;
 
+  contentMemory.push({
+  role:"user",
+  text:question,
+  time:new Date().toISOString()
+});
+
   const pageViews = getEventCount("page_view");
   const whatsapp = getEventCount("whatsapp_click");
   const sales = getEventCount("sale");
@@ -1481,6 +1505,10 @@ function askVaeroAI(){
   const lowerQ = question.toLowerCase();
 
   let answer = "";
+  const lastTopics = contentMemory
+  .slice(-8)
+  .map(x => x.text.toLowerCase())
+  .join(" ");
   const focus = currentSystemFocus;
 
   if(
@@ -1559,27 +1587,44 @@ function askVaeroAI(){
 }
 
   else if(
-    lowerQ.includes("analiz") ||
-    lowerQ.includes("yorumla") ||
-    lowerQ.includes("durum")
-  ){
-    if(sales === 0 && whatsapp > 10){
-      answer =
-        "İlgi oluşuyor fakat satış kapanışı eksik. İnsanlar sisteme giriyor ama son güven eşiğini geçemiyor olabilir.";
-    }
-    else if(whatsapp > 0 && tracking > whatsapp){
-      answer =
-        "Kargo takip ilgisi WhatsApp’tan yüksek. Kullanıcılar önce güven arıyor. Teslimat süreci daha görünür anlatılmalı.";
-    }
-    else if(pageViews > 200 && whatsapp < 10){
-      answer =
-        "Yüksek trafik var fakat düşük geçiş alınıyor. İçerik yanlış kitle çekiyor olabilir.";
-    }
-    else{
-      answer =
-        "Sistem şu an dengeli görünüyor. Atmosfer hissi korunarak dönüşüm artırılabilir.";
-    }
+  lowerQ.includes("sonraki") ||
+  lowerQ.includes("devam") ||
+  lowerQ.includes("bundan sonra")
+){
+  if(lastTopics.includes("güven")){
+    answer =
+      "Sonraki içerik zinciri güven temasından ilerlemeli. Şimdi gerçek kullanım hissi ve atmosfer deneyimi gösterilebilir.";
+  }else if(lastTopics.includes("atmosfer")){
+    answer =
+      "Atmosfer teması işlendi. Sonraki içerikte kullanıcı davranışı veya gece sürüş hissi gösterilebilir.";
+  }else if(lastTopics.includes("teslimat")){
+    answer =
+      "Teslimat güveni işlendi. Sonraki adım gerçek kullanıcı hissi ve ürün ritüeline geçmek olabilir.";
+  }else{
+    answer =
+      "Şu an sistem sonraki içerik yönünü analiz ediyor. İçerik zinciri oluşmaya başladı.";
   }
+}
+
+else if(
+  lowerQ.includes("analiz") ||
+  lowerQ.includes("yorumla") ||
+  lowerQ.includes("durum")
+){
+  if(sales === 0 && whatsapp > 10){
+    answer =
+      "İlgi oluşuyor fakat satış kapanışı eksik. İnsanlar sisteme giriyor ama son güven eşiğini geçemiyor olabilir.";
+  }else if(whatsapp > 0 && tracking > whatsapp){
+    answer =
+      "Kargo takip ilgisi WhatsApp’tan yüksek. Kullanıcılar önce güven arıyor. Teslimat süreci daha görünür anlatılmalı.";
+  }else if(pageViews > 200 && whatsapp < 10){
+    answer =
+      "Yüksek trafik var fakat düşük geçiş alınıyor. İçerik yanlış kitle çekiyor olabilir.";
+  }else{
+    answer =
+      "Sistem şu an dengeli görünüyor. Atmosfer hissi korunarak dönüşüm artırılabilir.";
+  }
+}
 
   else{
     answer =
@@ -1595,6 +1640,12 @@ function askVaeroAI(){
       ${answer}
     </div>
   `;
+
+  contentMemory.push({
+  role:"ai",
+  text:answer,
+  time:new Date().toISOString()
+});
 
   input.value = "";
   box.scrollTop = box.scrollHeight;
