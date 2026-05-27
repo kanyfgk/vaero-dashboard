@@ -942,22 +942,25 @@ function updateAIReport(){
   const whatsapp = getEventCount("whatsapp_click");
   const sales = getEventCount("sale");
   const tracking = getEventCount("tracking_submit");
-
+const whatsappRate =
+  pageViews > 0 ? (whatsapp / pageViews) * 100 : 0;
   $("ai-loss").innerText =
-    pageViews === 0 ? "Henüz analiz için veri yok." :
-    whatsapp === 0 ? "En büyük kayıp: ziyaretçi var ama WhatsApp geçişi yok." :
-    sales === 0 ? "En büyük kayıp: WhatsApp ilgisi var ama satış kaydı yok." :
-    "Satış akışı çalışıyor. Detaylı optimizasyon için daha fazla veri gerekli.";
+  pageViews === 0 ? "Henüz analiz için veri yok." :
+  whatsappRate < 4 ? "En büyük kayıp: içerik izleniyor fakat insanı aksiyona geçirmiyor. İlk 2 saniye ve gerçeklik hissi güçlendirilmeli." :
+  whatsapp === 0 ? "En büyük kayıp: ziyaretçi var ama WhatsApp geçişi yok." :
+  sales === 0 ? "En büyük kayıp: WhatsApp ilgisi var ama satış kaydı yok." :
+  "Satış akışı çalışıyor. Detaylı optimizasyon için daha fazla veri gerekli."; 
 
   $("ai-opportunity").innerText =
     tracking > 0 ? "Kargo takip kullanımı güven ihtiyacını gösteriyor. Bu alan satış güvenini artırmak için kullanılmalı." :
     "İlk fırsat: satış sayfası ve WhatsApp geçişlerini ölçmek.";
 
   $("ai-behavior").innerText =
-    "Ziyaretçi: " + pageViews +
-    " | WhatsApp: " + whatsapp +
-    " | Satış: " + sales +
-    " | Kargo takip: " + tracking;
+    aiMood +
+"\n\nZiyaretçi: " + pageViews +
+" | WhatsApp: " + whatsapp +
+" | Satış: " + sales +
+" | Kargo takip: " + tracking;
 
   $("ai-actions").innerHTML =
     "<li>Satış sayfası tıklamasını net takip et.</li>" +
@@ -965,6 +968,24 @@ function updateAIReport(){
     "<li>Her gerçek satışta sale eventi gönder.</li>" +
     "<li>Genel trend grafiğini günlük takip et.</li>";
   const conversion = parseFloat(getConversionRate());
+  let aiMood = "";
+
+if(conversion >= 12){
+  aiMood =
+    "Atmosfer + CTA dengesi güçlü. Sistem keşfet uyumu göstermeye başladı.";
+}
+else if(conversion >= 6){
+  aiMood =
+    "İçerik çalışıyor fakat ilk saniyelerde daha güçlü insan hissi gerekli.";
+}
+else if(pageViews >= 100){
+  aiMood =
+    "İzlenme geliyor fakat içerik soğuk algılanıyor olabilir.";
+}
+else{
+  aiMood =
+    "Sistem hâlâ veri topluyor.";
+}
 
 if($("ai-status")){
 if(conversion >= 10){
@@ -1630,6 +1651,29 @@ box.innerText =
   }
 }
 
+    if($("dailyActionText")){
+
+  if(hookStrength < 50 && aiRiskScore >= 60){
+    $("dailyActionText").innerText =
+      "Bugünkü aksiyon: İlk 1 saniyeye gerçek insan / gerçek araç içi sahne koy. AI hissi azaltılmalı.";
+  }
+
+  else if(hookStrength >= 50 && whatsappRate < 7){
+    $("dailyActionText").innerText =
+      "Bugünkü aksiyon: Görsel ilgi var ama CTA zayıf. Story ve açıklamada WhatsApp geçişi daha doğal yönlendirilmeli.";
+  }
+
+  else if(whatsappRate >= 10){
+    $("dailyActionText").innerText =
+      "Bugünkü aksiyon: İçerik ilgi oluşturuyor. Aynı atmosfer korunup gerçek kutu açılışıyla güven artırılmalı.";
+  }
+
+  else{
+    $("dailyActionText").innerText =
+      "Bugünkü aksiyon: Veri toplanıyor. İçerik ritmi bozulmadan devam edilmeli.";
+  }
+}
+
     if($("trafficType")){
   const pageViews = getEventCount("page_view");
   const whatsapp = getEventCount("whatsapp_click");
@@ -1724,6 +1768,31 @@ if(sales === 0 && whatsappClicks >= 10){
 $("riskWarning").innerText = riskText;
 
 let intentScore = 0;
+    let aiRiskScore = 0;
+    let hookStrength = 0;
+
+if(pageViews > 100 && whatsappRate >= 10){
+  hookStrength = 90;
+}
+else if(pageViews > 80){
+  hookStrength = 65;
+}
+else if(pageViews > 30){
+  hookStrength = 40;
+}
+else{
+  hookStrength = 20;
+}
+
+if(whatsappRate < 4 && pageViews > 80){
+  aiRiskScore = 85;
+}
+else if(whatsappRate < 7){
+  aiRiskScore = 60;
+}
+else{
+  aiRiskScore = 25;
+}
 intentScore += whatsappClicks * 4;
 intentScore += trackingSubmits * 2;
 intentScore += sales * 10;
@@ -1740,6 +1809,41 @@ if(intentScore >= 70){
   $("intentText").innerText = "Orta seviye satın alma ilgisi mevcut.";
 }else{
   $("intentText").innerText = "Zayıf satın alma niyeti. Trafik soğuk olabilir.";
+}
+
+    if($("bestEmotion")){
+      if($("topContent")){
+
+  if(hookStrength >= 85){
+    $("topContent").innerText =
+      "Strong Hook / Discovery Pull";
+  }
+
+  else if(hookStrength >= 50){
+    $("topContent").innerText =
+      "Visual Atmosphere Hook";
+  }
+
+  else{
+    $("topContent").innerText =
+      "Weak Intro Retention";
+  }
+}
+
+  if(aiRiskScore >= 80){
+    $("bestEmotion").innerText =
+      "AI hissi baskın";
+  }
+
+  else if(aiRiskScore >= 50){
+    $("bestEmotion").innerText =
+      "Atmosfer güçlü fakat yapaylık hissi var";
+  }
+
+  else{
+    $("bestEmotion").innerText =
+      "Doğal premium atmosfer";
+  }
 }
 
 let dailyAction = "";
@@ -1954,7 +2058,11 @@ function askVaeroAI(){
 }
 
 else if(
-  lowerQ.includes("analiz") ||
+  (
+    lowerQ.includes("analiz") &&
+    !lowerQ.includes("içerik analizi") &&
+    !lowerQ.includes("reels analizi")
+  ) ||
   lowerQ.includes("yorumla") ||
   lowerQ.includes("durum")
 ){
