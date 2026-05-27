@@ -1358,6 +1358,46 @@ document.addEventListener("DOMContentLoaded",function(){
   $("bestHour").innerText = getPeakHour("page_view");
 }
 
+    if($("topContent")){
+  const pageViews = getEventCount("page_view");
+  const whatsapp = getEventCount("whatsapp_click");
+  const tracking = getEventCount("tracking_submit");
+
+  if(whatsapp > 0){
+    $("topContent").innerText = "WhatsApp Çeken İçerik";
+  }else if(tracking > 0){
+    $("topContent").innerText = "Güven / Kargo Merakı";
+  }else if(pageViews > 0){
+    $("topContent").innerText = "Atmosfer İzlenimi";
+  }else{
+    $("topContent").innerText = "Veri Bekleniyor";
+  }
+}
+
+    if($("trafficType")){
+  const pageViews = getEventCount("page_view");
+  const whatsapp = getEventCount("whatsapp_click");
+
+  if(whatsapp > pageViews * 0.15){
+    $("trafficType").innerText = "Hot";
+  }else if(pageViews > 0){
+    $("trafficType").innerText = "Warm";
+  }else{
+    $("trafficType").innerText = "Cold";
+  }
+}
+
+if($("bestCTA")){
+  const whatsapp = getEventCount("whatsapp_click");
+  const tracking = getEventCount("tracking_submit");
+
+  if(whatsapp >= tracking){
+    $("bestCTA").innerText = "WhatsApp CTA";
+  }else{
+    $("bestCTA").innerText = "Tracking CTA";
+  }
+}
+
     $("visitors").innerText = getEventCount("page_view");
     $("whatsapp").innerText = getEventCount("whatsapp_click");
     $("sales").innerText = getEventCount("sale");
