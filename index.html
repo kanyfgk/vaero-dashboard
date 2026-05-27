@@ -690,6 +690,13 @@ Analiz bekleniyor...
 </div>
 
   <div class="section">
+  <h2>Content Score Engine</h2>
+  <div id="contentScoreBox">
+    İçerik kalite analizi bekleniyor...
+  </div>
+</div>
+
+  <div class="section">
   <h2>Canlı İçgörü Akışı</h2>
   <div id="insightTimeline">
     İçgörü bekleniyor...
@@ -716,6 +723,27 @@ let allEvents = [];
 let currentChart = null;
   let activePanel = null;
   let contentMemory = [];
+  let contentPatterns = {
+  aiHeavy:0,
+  trustHeavy:0,
+  atmosphereHeavy:0,
+  humanHeavy:0
+};
+  let contentDatabase = [
+  {
+    name:"Night Drive",
+    type:"atmosphere",
+    views:129,
+    retention:2,
+    whatsapp:0,
+    aiRisk:82,
+    trust:28,
+    atmosphere:91
+    growth:12,
+    saveRate:3,
+    shareRate:1
+  }
+];
 
 function $(id){
   return document.getElementById(id);
@@ -1113,6 +1141,7 @@ document.addEventListener("DOMContentLoaded",function(){
   setupClicks();
   loadData();
   setInterval(loadData,30000);
+  renderContentAnalysis();
 });
   function renderLastEvents(events) {
   const container = document.getElementById("eventList");
@@ -1238,6 +1267,206 @@ document.addEventListener("DOMContentLoaded",function(){
     currentSystemFocus =
       "Şu an ana odak: atmosfer hissini koruyarak dönüşümü artırmak.";
   }
+}
+
+  function renderContentScore(){
+  const box = $("contentScoreBox");
+  if(!box) return;
+
+  const content = contentDatabase[0];
+    if(content.aiRisk > 70){
+  contentPatterns.aiHeavy++;
+}
+
+if(content.trust > 60){
+  contentPatterns.trustHeavy++;
+}
+
+if(content.atmosphere > 70){
+  contentPatterns.atmosphereHeavy++;
+}
+
+if(content.retention > 5){
+  contentPatterns.humanHeavy++;
+}
+
+  let score = Math.round(
+    score += content.growth * 0.3;
+score += content.saveRate * 0.8;
+score += content.shareRate * 1.2;
+
+score = Math.min(100, Math.round(score));
+    (content.atmosphere * 0.35) +
+    (content.trust * 0.25) +
+    ((100 - content.aiRisk) * 0.25) +
+    (Math.min(content.retention * 20, 100) * 0.15)
+  );
+
+  let analysis = "";
+    let evolutionNote = "";
+
+if(content.growth >= 10 && content.retention <= 2){
+  evolutionNote =
+    "\n\nEvolution: İçerik ilk saniyede zayıf tutmuş ama dağıtım büyüyor. Algoritma hâlâ test ediyor; gerçek insan sahnesiyle desteklenmeli.";
+}
+else if(content.saveRate >= 5){
+  evolutionNote =
+    "\n\nEvolution: Kaydetme sinyali oluşuyor. Bu içerik güven/atmosfer serisine çevrilebilir.";
+}
+else if(content.shareRate >= 3){
+  evolutionNote =
+    "\n\nEvolution: Paylaşım sinyali var. Daha net hook ile büyütülebilir.";
+}
+else{
+  evolutionNote =
+    "\n\nEvolution: İçerik hâlâ erken test aşamasında.";
+}
+
+if(content.retention <= 2){
+  analysis =
+    "İlk saniyelerde AI hissi oluşuyor. Daha gerçek insan sahnesi ve doğal kamera kullanımı gerekli.";
+}
+else if(content.aiRisk > 70){
+  analysis =
+    "Atmosfer güçlü fakat fazla kusursuz görüntü AI hissi oluşturabilir.";
+}
+else if(content.trust < 40){
+  analysis =
+    "İçerik estetik duruyor fakat güven hissi henüz yeterince oluşmuyor.";
+}
+else{
+  analysis =
+    "İçerik dengeli görünüyor. Atmosfer korunarak ölçeklenebilir.";
+}
+
+    let patternNote = "";
+
+if(contentPatterns.aiHeavy > contentPatterns.humanHeavy){
+  patternNote = "\n\nPattern: AI hissi gerçek insan tutulumundan yüksek. Sonraki içerikte gerçek kutu açılışı / elde ürün / doğal kamera önerilir.";
+}else if(contentPatterns.atmosphereHeavy > 0){
+  patternNote = "\n\nPattern: Atmosfer dili güçlü. Bunu gerçek insan sahnesiyle dengelemek gerekir.";
+}else{
+  patternNote = "\n\nPattern: Daha fazla içerik verisi gerekli.";
+}
+
+box.innerText =
+  content.name + " analiz raporu:\n\n" +
+  analysis +
+  patternNote +
+  evolutionNote +
+  "\n\nAI Score: " + score + "/100";
+
+    function renderContentAnalysis(){
+
+const contentDatabase = [
+  {
+    name:"Night Drive Atmosphere",
+    retention:1.8,
+    atmosphere:92,
+    trust:38,
+    aiRisk:81,
+    growth:14,
+    saveRate:2,
+    shareRate:1
+  },
+
+  {
+    name:"Real Woman Unboxing",
+    retention:4.9,
+    atmosphere:88,
+    trust:84,
+    aiRisk:18,
+    growth:32,
+    saveRate:11,
+    shareRate:7
+  },
+
+  {
+    name:"White Tea Ritual",
+    retention:3.4,
+    atmosphere:95,
+    trust:72,
+    aiRisk:22,
+    growth:21,
+    saveRate:8,
+    shareRate:5
+  }
+];
+
+const box = $("ai-behavior");
+
+if(!box) return;
+
+const content = contentDatabase[0];
+
+let score = 0;
+
+score += content.atmosphere * 0.35;
+score += content.trust * 0.25;
+score += (100 - content.aiRisk) * 0.25;
+score += Math.min(content.retention * 20,100) * 0.15;
+
+score += content.saveRate * 1.5;
+score += content.shareRate * 1.2;
+
+score = Math.min(100, Math.round(score));
+
+let analysis = "";
+
+let evolutionNote = "";
+
+if(content.growth >= 10 && content.retention <= 2){
+  evolutionNote =
+    "\n\nEvolution: İçerik ilk saniyede zayıf tutmuş ama dağıtım büyüyor. Algoritma hâlâ test ediyor; gerçek insan sahnesiyle desteklenmeli.";
+}
+else if(content.saveRate >= 5){
+  evolutionNote =
+    "\n\nEvolution: Kaydetme sinyali oluşuyor. Bu içerik güven/atmosfer serisine çevrilebilir.";
+}
+else if(content.shareRate >= 3){
+  evolutionNote =
+    "\n\nEvolution: Paylaşım sinyali var. Daha net hook ile büyütülebilir.";
+}
+else{
+  evolutionNote =
+    "\n\nEvolution: İçerik hâlâ erken test aşamasında.";
+}
+
+let patternNote = "";
+
+if(content.retention <= 2){
+  analysis =
+    "İlk saniyelerde AI hissi oluşuyor. Daha gerçek insan sahnesi ve doğal kamera kullanımı gerekli.";
+}
+else if(content.aiRisk > 70){
+  analysis =
+    "Atmosfer güçlü fakat fazla kusursuz görüntü AI hissi oluşturabiliyor.";
+}
+else if(content.trust < 40){
+  analysis =
+    "İnsanlar estetiği seviyor fakat güven bağı zayıf.";
+}
+else{
+  analysis =
+    "İçerik dengeli görünüyor. Atmosfer ve güven birlikte çalışıyor.";
+}
+
+if(content.atmosphere >= 85 && content.aiRisk >= 70){
+  patternNote =
+    "\n\nPattern: Atmosfer dili güçlü. Bunu gerçek insan sahnesiyle desteklemek gerekiyor.";
+}
+else{
+  patternNote =
+    "\n\nPattern: Daha fazla içerik verisi gerekli.";
+}
+
+box.innerText =
+  content.name + " analiz raporu:\n\n" +
+  analysis +
+  patternNote +
+  evolutionNote +
+  "\n\nAI Score: " + score + "/100";
+
 }
 
   function renderContentPlan(){
@@ -1374,7 +1603,9 @@ document.addEventListener("DOMContentLoaded",function(){
     allEvents = data;
     renderLastEvents(data);
     renderCarriers();
+    renderContentScore();
     updateAIReport();
+    renderContentAnalysis();
     renderInsights();
     renderContentPlan();
     updateSystemFocus();
@@ -1697,6 +1928,28 @@ function askVaeroAI(){
   }else{
     answer =
       "Şu an sistem sonraki içerik yönünü analiz ediyor. İçerik zinciri oluşmaya başladı.";
+  }
+}
+
+    else if(
+  lowerQ.includes("içerik analizi") ||
+  lowerQ.includes("hook") ||
+  lowerQ.includes("reels analizi")
+){
+
+  answer = $("ai-behavior")
+  ? $("ai-behavior").innerText
+  : "İçerik analizi henüz hazır değil.";
+}
+
+  else if(content.whatsapp > 0){
+    answer =
+      content.name + " içeriği geçiş üretmeye başlamış. Atmosfer hissi korunmalı.";
+  }
+
+  else{
+    answer =
+      content.name + " içeriği analiz ediliyor. Daha fazla veri gerekli.";
   }
 }
 
