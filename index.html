@@ -449,6 +449,34 @@ a{
       <div class="label">En Aktif Saat</div>
       <div id="detailPeakHour" class="value">-</div>
     </div>
+    <div class="card">
+  <div class="label">CONTENT INTELLIGENCE</div>
+
+  <div class="row">
+    <span>Top Content</span>
+    <strong id="topContent">Night Drive Reel</strong>
+  </div>
+
+  <div class="row">
+    <span>Best Hour</span>
+    <strong id="bestHour">21:00</strong>
+  </div>
+
+  <div class="row">
+    <span>Strongest Emotion</span>
+    <strong id="bestEmotion">Quiet Escape</strong>
+  </div>
+
+  <div class="row">
+    <span>Most Effective CTA</span>
+    <strong id="bestCTA">Atmosphere Feeling</strong>
+  </div>
+
+  <div class="row">
+    <span>Traffic Temperature</span>
+    <strong id="trafficType">Warm</strong>
+  </div>
+</div>
   </div>
 
   <div class="section">
@@ -1326,6 +1354,9 @@ document.addEventListener("DOMContentLoaded",function(){
     renderContentPlan();
     updateSystemFocus();
     updateDecisionEngine();
+    if($("bestHour")){
+  $("bestHour").innerText = getPeakHour("page_view");
+}
 
     $("visitors").innerText = getEventCount("page_view");
     $("whatsapp").innerText = getEventCount("whatsapp_click");
