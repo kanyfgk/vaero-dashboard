@@ -376,6 +376,16 @@ a{
   border:1px solid rgba(255,255,255,.06);
   transition:.25s ease;
 }
+
+  #contentPlanBox{
+  padding:16px;
+  border-radius:18px;
+  background:rgba(0,0,0,.18);
+  border:1px solid rgba(255,255,255,.08);
+  color:#f4efe6;
+  line-height:1.6;
+  font-size:14px;
+}
   
 </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -625,6 +635,13 @@ Analiz bekleniyor...
 </section>
 
   <div class="section">
+  <h2>Bugünkü İçerik Operasyonu</h2>
+  <div id="contentPlanBox">
+    5. video planı bekleniyor...
+  </div>
+</div>
+
+  <div class="section">
   <h2>Canlı İçgörü Akışı</h2>
   <div id="insightTimeline">
     İçgörü bekleniyor...
@@ -646,6 +663,8 @@ const API_URL = "https://wpfiszzxlwkmaqcqmywa.supabase.co/rest/v1/events?select=
 const API_KEY = "sb_publishable_eTspasegbb8PbX2hEGMD5w_ggrWRuYN";
 
 let allEvents = [];
+  let currentSystemFocus = "";
+  let currentDecision = "";
 let currentChart = null;
   let activePanel = null;
 
@@ -1089,6 +1108,97 @@ document.addEventListener("DOMContentLoaded",function(){
   }).join("");
 }
 
+  function updateDecisionEngine(){
+
+  const pageViews = getEventCount("page_view");
+  const whatsapp = getEventCount("whatsapp_click");
+  const tracking = getEventCount("tracking_submit");
+  const sales = getEventCount("sale");
+
+  if(pageViews < 50){
+    currentDecision =
+      "Karar Motoru: Öncelik trafik büyütme. Yeni reels ve keşfet odaklı girişler gerekli.";
+  }
+
+  else if(whatsapp < 10){
+    currentDecision =
+      "Karar Motoru: CTA zayıf. İnsanlar izliyor fakat geçiş yapmıyor.";
+  }
+
+  else if(sales === 0){
+    currentDecision =
+      "Karar Motoru: Güven eksik. WhatsApp sonrası kapanış güçlendirilmeli.";
+  }
+
+  else if(tracking > whatsapp){
+    currentDecision =
+      "Karar Motoru: Teslimat ve güven anlatısı güçlendirilmeli.";
+  }
+
+  else{
+    currentDecision =
+      "Karar Motoru: Sistem stabil. Atmosfer korunarak ölçeklenebilir.";
+  }
+}
+
+  function updateSystemFocus(){
+
+  const pageViews = getEventCount("page_view");
+  const whatsapp = getEventCount("whatsapp_click");
+  const tracking = getEventCount("tracking_submit");
+  const sales = getEventCount("sale");
+
+  if(sales === 0 && whatsapp >= 10){
+    currentSystemFocus =
+      "Şu an ana odak: WhatsApp sonrası güven ve satış kapanışı.";
+  }
+
+  else if(tracking > whatsapp){
+    currentSystemFocus =
+      "Şu an ana odak: teslimat güveni ve kargo şeffaflığı.";
+  }
+
+  else if(pageViews > 100 && whatsapp < 10){
+    currentSystemFocus =
+      "Şu an ana odak: içerik kalitesi ve doğru kitle.";
+  }
+
+  else{
+    currentSystemFocus =
+      "Şu an ana odak: atmosfer hissini koruyarak dönüşümü artırmak.";
+  }
+}
+
+  function renderContentPlan(){
+  const box = $("contentPlanBox");
+
+  const pageViews = getEventCount("page_view");
+  const whatsapp = getEventCount("whatsapp_click");
+  const tracking = getEventCount("tracking_submit");
+  const sales = getEventCount("sale");
+
+  let plan = "";
+
+  if(sales === 0 && whatsapp >= 10){
+    plan =
+      "5. video yönü: güven ve kapanış. Ürün hissi, teslimat güveni ve WhatsApp geçişi net gösterilmeli.";
+  }
+  else if(tracking > whatsapp){
+    plan =
+      "5. video yönü: teslimat güveni. Kargo/takip süreci story ve reels içinde sakin şekilde anlatılmalı.";
+  }
+  else if(pageViews > 100 && whatsapp < 10){
+    plan =
+      "5. video yönü: daha güçlü giriş cümlesi. İlk 2 saniye merak ve atmosfer hissi artırılmalı.";
+  }
+  else{
+    plan =
+      "5. video yönü: atmosferi koru. Sabah/akşam sürüş hissi, White Tea atmosferi ve sessiz premium ton devam etmeli.";
+  }
+
+  box.innerText = plan;
+}
+
   function renderInsights(){
     renderHeatmap();
 
@@ -1195,6 +1305,9 @@ document.addEventListener("DOMContentLoaded",function(){
     renderCarriers();
     updateAIReport();
     renderInsights();
+    renderContentPlan();
+    updateSystemFocus();
+    updateDecisionEngine();
 
     $("visitors").innerText = getEventCount("page_view");
     $("whatsapp").innerText = getEventCount("whatsapp_click");
@@ -1368,6 +1481,7 @@ function askVaeroAI(){
   const lowerQ = question.toLowerCase();
 
   let answer = "";
+  const focus = currentSystemFocus;
 
   if(
     lowerQ.includes("merhaba") ||
@@ -1423,6 +1537,31 @@ function askVaeroAI(){
     answer = $("dailyActionText").innerText;
   }
 
+    else if(
+  else if(
+  lowerQ.includes("video") ||
+  lowerQ.includes("içerik") ||
+  lowerQ.includes("reels") ||
+  lowerQ.includes("plan") ||
+  lowerQ.includes("kurgu")
+){
+  answer = $("contentPlanBox").innerText;
+}
+  lowerQ.includes("beşinci video") ||
+  lowerQ.includes("video plan") ||
+  lowerQ.includes("içerik plan")
+){
+  answer = $("contentPlanBox").innerText;
+}
+
+  else if(
+  lowerQ.includes("karar") ||
+  lowerQ.includes("ne yapmalıyız") ||
+  lowerQ.includes("öncelik")
+){
+  answer = currentDecision;
+}
+
   else if(
     lowerQ.includes("analiz") ||
     lowerQ.includes("yorumla") ||
@@ -1448,10 +1587,11 @@ function askVaeroAI(){
 
   else{
     answer =
-      "Genel tablo: " + pageViews + " ziyaretçi, " +
-      whatsapp + " WhatsApp geçişi, " +
-      tracking + " kargo takip kullanımı ve " +
-      sales + " satış eventi görünüyor.";
+  focus + " Genel tablo: " +
+  pageViews + " ziyaretçi, " +
+  whatsapp + " WhatsApp geçişi, " +
+  tracking + " kargo takip kullanımı ve " +
+  sales + " satış eventi görünüyor.";
   }
 
   box.innerHTML += `
