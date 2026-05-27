@@ -523,6 +523,11 @@ a{
   </div>
 </div>
 
+  <div class="card" style="margin-top:14px;">
+<div class="label">AI STATUS</div>
+<div id="ai-status" class="value">Analiz bekleniyor...</div>
+</div>
+
 <div id="status" class="status">Demo veri aktif — gerçek Supabase bağlantısı sonraki adımda bağlanacak.</div>
 
 <div class="grid">
@@ -895,6 +900,15 @@ function updateEventList(){
   ).join("");
 }
 
+  function getConversionRate(){
+const pageViews = getEventCount("page_view");
+const whatsapp = getEventCount("whatsapp_click");
+
+if(pageViews === 0) return "0.0";
+
+return ((whatsapp / pageViews) * 100).toFixed(1);
+}
+
 function updateAIReport(){
   const pageViews = getEventCount("page_view");
   const whatsapp = getEventCount("whatsapp_click");
@@ -922,6 +936,17 @@ function updateAIReport(){
     "<li>WhatsApp butonunu satış niyetiyle ölç.</li>" +
     "<li>Her gerçek satışta sale eventi gönder.</li>" +
     "<li>Genel trend grafiğini günlük takip et.</li>";
+  const conversion = parseFloat(getConversionRate());
+
+if($("ai-status")){
+if(conversion >= 10){
+$("ai-status").innerText = "AI: Sistem agresif büyüyor.";
+}else if(conversion >= 4){
+$("ai-status").innerText = "AI: Sistem stabil ilerliyor.";
+}else{
+$("ai-status").innerText = "AI: Daha fazla trafik gerekiyor.";
+}
+}
 }
 
 function getTodayCount(eventName){
@@ -1402,6 +1427,7 @@ if($("bestCTA")){
     $("whatsapp").innerText = getEventCount("whatsapp_click");
     $("sales").innerText = getEventCount("sale");
     $("track").innerText = getEventCount("tracking_submit");
+
     
 const pageViews = getEventCount("page_view");
 const whatsappClicks = getEventCount("whatsapp_click");
@@ -1498,10 +1524,7 @@ if(sales === 0 && whatsappClicks >= 10){
 }
 
 $("dailyActionText").innerText = dailyAction;
-    
-  sales === 0 && whatsappClicks > 0
-    ? "İlgi var, fakat satış kaydı yok. WhatsApp sonrası güven ve kapanış süreci güçlendirilmeli."
-    : "Funnel akışı izleniyor.";
+  
     const latestEvent = data[data.length - 1];
 
 if(latestEvent){
