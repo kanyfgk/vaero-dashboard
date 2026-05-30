@@ -714,7 +714,7 @@ Analiz bekleniyor...
 </div>
 
 <script>
-const API_URL = "https://wpfiszzxlwkmaqcqmywa.supabase.co/rest/v1/events?select=id,created_at,event_name,page,meta&order=created_at.asc";
+const API_URL = "https://wpfiszzxlwkmaqcqmywa.supabase.co/rest/v1/events?select=id,created_at,event_name,page,meta&order=created_at.desc";
 const API_KEY = "sb_publishable_eTspasegbb8PbX2hEGMD5w_ggrWRuYN";
 
 let allEvents = [];
@@ -1867,7 +1867,7 @@ if(sales === 0 && whatsappClicks >= 10){
 
 $("dailyActionText").innerText = dailyAction;
   
-    const latestEvent = data[data.length - 1];
+    const latestEvent = data[0];
 
 if(latestEvent){
   $("lastEventName").innerText = latestEvent.event_name || "-";
