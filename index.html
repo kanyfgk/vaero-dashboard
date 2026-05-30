@@ -715,7 +715,6 @@ Analiz bekleniyor...
 
 <script>
 const API_URL = "https://wpfiszzxlwkmaqcqmywa.supabase.co/rest/v1/events?select=id,created_at,event_name,page,meta&order=created_at.asc";
-  console.log("Loaded events:", data.length);
 const API_KEY = "sb_publishable_eTspasegbb8PbX2hEGMD5w_ggrWRuYN";
 
 let allEvents = [];
@@ -1620,6 +1619,7 @@ box.innerText =
 });
 
     const data = await response.json();
+    console.log("Loaded events:", data.length);
 
     if(!Array.isArray(data)){
       $("status").innerText = "Veri okunamadı.";
@@ -1871,7 +1871,7 @@ if(allEvents.length > 0){
       : "0.0";
 
   $("alertContent").innerHTML =
-    "Sistem aktif • " + data.length + " event alındı<br>" +
+    "Sistem aktif • " + allEvents.length + " event alındı<br>"
     pageViews + " ziyaretçi • " +
     whatsappClicks + " WhatsApp geçişi • %" +
     whatsappRateText + " geçiş oranı";
