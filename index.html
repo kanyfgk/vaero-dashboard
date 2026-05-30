@@ -955,12 +955,6 @@ const whatsappRate =
     tracking > 0 ? "Kargo takip kullanımı güven ihtiyacını gösteriyor. Bu alan satış güvenini artırmak için kullanılmalı." :
     "İlk fırsat: satış sayfası ve WhatsApp geçişlerini ölçmek.";
 
-  $("ai-behavior").innerText =
-    aiMood +
-"\n\nZiyaretçi: " + pageViews +
-" | WhatsApp: " + whatsapp +
-" | Satış: " + sales +
-" | Kargo takip: " + tracking;
 
   $("ai-actions").innerHTML =
     "<li>Satış sayfası tıklamasını net takip et.</li>" +
@@ -986,6 +980,13 @@ else{
   aiMood =
     "Sistem hâlâ veri topluyor.";
 }
+
+  $("ai-behavior").innerText =
+  aiMood +
+  "\n\nZiyaretçi: " + pageViews +
+  " | WhatsApp: " + whatsapp +
+  " | Satış: " + sales +
+  " | Kargo takip: " + tracking;
 
 if($("ai-status")){
 if(conversion >= 10){
@@ -1377,9 +1378,9 @@ box.innerText =
   patternNote +
   evolutionNote +
   "\n\nAI Score: " + score + "/100";
+}
 
-    function renderContentAnalysis(){
-
+function renderContentAnalysis(){
 const contentDatabase = [
   {
     name:"Night Drive Atmosphere",
@@ -1649,29 +1650,6 @@ box.innerText =
     $("topContent").innerText = "Atmosfer İzlenimi";
   }else{
     $("topContent").innerText = "Veri Bekleniyor";
-  }
-}
-
-    if($("dailyActionText")){
-
-  if(hookStrength < 50 && aiRiskScore >= 60){
-    $("dailyActionText").innerText =
-      "Bugünkü aksiyon: İlk 1 saniyeye gerçek insan / gerçek araç içi sahne koy. AI hissi azaltılmalı.";
-  }
-
-  else if(hookStrength >= 50 && whatsappRate < 7){
-    $("dailyActionText").innerText =
-      "Bugünkü aksiyon: Görsel ilgi var ama CTA zayıf. Story ve açıklamada WhatsApp geçişi daha doğal yönlendirilmeli.";
-  }
-
-  else if(whatsappRate >= 10){
-    $("dailyActionText").innerText =
-      "Bugünkü aksiyon: İçerik ilgi oluşturuyor. Aynı atmosfer korunup gerçek kutu açılışıyla güven artırılmalı.";
-  }
-
-  else{
-    $("dailyActionText").innerText =
-      "Bugünkü aksiyon: Veri toplanıyor. İçerik ritmi bozulmadan devam edilmeli.";
   }
 }
 
