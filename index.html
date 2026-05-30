@@ -760,6 +760,13 @@ function getEventCount(name){
   return allEvents.filter(e => e.event_name === name).length;
 }
 
+  console.log(
+  "page_view:",
+  getEventCount("page_view"),
+  "whatsapp_click:",
+  getEventCount("whatsapp_click")
+);
+
 function groupByDay(events, eventName){
   const grouped = {};
 
