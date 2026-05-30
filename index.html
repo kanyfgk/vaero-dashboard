@@ -772,13 +772,6 @@ function getEventCount(name){
   ).length;
 }
 
-  console.log(
-  "page_view:",
-  getEventCount("page_view"),
-  "whatsapp_click:",
-  getEventCount("whatsapp_click")
-);
-
 function groupByDay(events, eventName){
   const grouped = {};
 
@@ -1653,6 +1646,12 @@ box.innerText =
     }
 
     allEvents = data;
+    console.log(
+  "DOĞRU SAYIM:",
+  "page_view:", getEventCount("page_view"),
+  "whatsapp:", getEventCount("whatsapp_click"),
+  "tracking:", getEventCount("tracking_submit")
+);
     renderLastEvents(data);
     renderCarriers();
     renderContentScore();
