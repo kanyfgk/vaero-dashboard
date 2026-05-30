@@ -1311,17 +1311,18 @@ if(content.retention > 5){
   contentPatterns.humanHeavy++;
 }
 
-  let score = Math.round(
-    score += content.growth * 0.3;
+  let score = 0;
+
+score += content.atmosphere * 0.35;
+score += content.trust * 0.25;
+score += (100 - content.aiRisk) * 0.25;
+score += Math.min(content.retention * 20, 100) * 0.15;
+
+score += content.growth * 0.3;
 score += content.saveRate * 0.8;
 score += content.shareRate * 1.2;
 
 score = Math.min(100, Math.round(score));
-    (content.atmosphere * 0.35) +
-    (content.trust * 0.25) +
-    ((100 - content.aiRisk) * 0.25) +
-    (Math.min(content.retention * 20, 100) * 0.15)
-  );
 
   let analysis = "";
     let evolutionNote = "";
