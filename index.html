@@ -715,6 +715,7 @@ Analiz bekleniyor...
 
 <script>
 const API_URL = "https://wpfiszzxlwkmaqcqmywa.supabase.co/rest/v1/events?select=id,created_at,event_name,page,meta&order=created_at.asc";
+  console.log("Loaded events:", data.length);
 const API_KEY = "sb_publishable_eTspasegbb8PbX2hEGMD5w_ggrWRuYN";
 
 let allEvents = [];
@@ -1608,13 +1609,15 @@ box.innerText =
 
   try{
     const response = await fetch(API_URL,{
-      method:"GET",
-      headers:{
-        apikey:API_KEY,
-        Authorization:"Bearer " + API_KEY,
-        "Content-Type":"application/json"
-      }
-    });
+  method:"GET",
+  headers:{
+    apikey:API_KEY,
+    Authorization:"Bearer " + API_KEY,
+    "Content-Type":"application/json",
+    "Range":"0-3000",
+    "Prefer":"count=exact"
+  }
+});
 
     const data = await response.json();
 
