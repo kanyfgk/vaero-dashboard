@@ -1628,6 +1628,13 @@ box.innerText =
     const data = await response.json();
     console.log("Loaded events:", data.length);
 
+    console.log(
+  "page_view:",
+  getEventCount("page_view"),
+  "whatsapp_click:",
+  getEventCount("whatsapp_click")
+);
+
     if(!Array.isArray(data)){
       $("status").innerText = "Veri okunamadı.";
       return;
