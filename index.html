@@ -757,7 +757,19 @@ function clearChart(){
 }
 
 function getEventCount(name){
-  return allEvents.filter(e => e.event_name === name).length;
+
+  const aliases = {
+    "whatsapp_click": ["whatsapp_click","whatsapp","whatsapp_open","whatsapp_redirect"],
+    "page_view": ["page_view","visit","visitor"],
+    "tracking_submit": ["tracking_submit","tracking"],
+    "sale": ["sale","purchase"]
+  };
+
+  const names = aliases[name] || [name];
+
+  return allEvents.filter(e =>
+    names.includes(e.event_name)
+  ).length;
 }
 
   console.log(
