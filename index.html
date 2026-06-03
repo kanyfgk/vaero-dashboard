@@ -675,6 +675,92 @@ a{
       <small>İlk test / satış stoğu</small>
     </div>
 
+    <div class="section">
+  <h2>Customer Trust Asset Board</h2>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Gerçek Ürün Görseli</div>
+      <div id="realProductAsset" class="value">Eksik</div>
+      <small>Ev / araç içi gerçek kullanım</small>
+    </div>
+
+    <div class="section">
+  <h2>WhatsApp Sales Pipeline</h2>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">WhatsApp Adayı</div>
+      <div id="pipelineLeads" class="value">0</div>
+      <small>WhatsApp geçişleri</small>
+    </div>
+
+    <div class="card">
+      <div class="label">Kapanış Riski</div>
+      <div id="closingRisk" class="value">Beklemede</div>
+      <small>Satışa dönmeyen ilgi</small>
+    </div>
+
+    <div class="card">
+      <div class="label">Güven İhtiyacı</div>
+      <div id="trustNeed" class="value">Orta</div>
+      <small>Teslimat / belge / gerçek ürün</small>
+    </div>
+
+    <div class="card">
+      <div class="label">Pipeline Durumu</div>
+      <div id="pipelineStatus" class="value">İzleniyor</div>
+      <small>WhatsApp sonrası takip</small>
+    </div>
+  </div>
+
+  <div id="pipelineNote" style="
+    margin-top:16px;
+    padding:16px;
+    border-radius:18px;
+    background:rgba(0,0,0,.18);
+    border:1px solid rgba(255,255,255,.08);
+    color:#f4efe6;
+    line-height:1.6;
+    font-size:14px;
+  ">
+    WhatsApp satış hattı bekleniyor...
+  </div>
+</div>
+
+    <div class="card">
+      <div class="label">Teslimat Kanıtı</div>
+      <div id="deliveryProofAsset" class="value">Eksik</div>
+      <small>Paket, kargo, teslimat süreci</small>
+    </div>
+
+    <div class="card">
+      <div class="label">Müşteri Yorumu</div>
+      <div id="customerReviewAsset" class="value">Eksik</div>
+      <small>WhatsApp / story geri bildirimi</small>
+    </div>
+
+    <div class="card">
+      <div class="label">Güven Skoru</div>
+      <div id="trustAssetScore" class="value">Düşük</div>
+      <small>Sosyal kanıt seviyesi</small>
+    </div>
+  </div>
+
+  <div id="trustAssetNote" style="
+    margin-top:16px;
+    padding:16px;
+    border-radius:18px;
+    background:rgba(201,168,104,.12);
+    border:1px solid rgba(201,168,104,.22);
+    color:#f4efe6;
+    line-height:1.6;
+    font-size:14px;
+  ">
+    Güven varlıkları bekleniyor...
+  </div>
+</div>
+
     <div class="card">
       <div class="label">Koku Stok Durumu</div>
       <div id="fragranceStockStatus" class="value">Sınırlı</div>
@@ -1699,6 +1785,71 @@ document.addEventListener("DOMContentLoaded",function(){
   }).join("");
 }
 
+  function updateWhatsappSalesPipeline(){
+  const whatsapp = getEventCount("whatsapp_click");
+  const sales = getEventCount("sale");
+  const tracking = getEventCount("tracking_submit");
+
+  if($("pipelineLeads")) $("pipelineLeads").innerText = whatsapp;
+
+  if($("closingRisk")){
+    if(whatsapp >= 10 && sales === 0){
+      $("closingRisk").innerText = "Yüksek";
+    }else if(whatsapp > sales){
+      $("closingRisk").innerText = "Orta";
+    }else{
+      $("closingRisk").innerText = "Düşük";
+    }
+  }
+
+  if($("trustNeed")){
+    if(tracking > whatsapp || sales === 0){
+      $("trustNeed").innerText = "Yüksek";
+    }else{
+      $("trustNeed").innerText = "Orta";
+    }
+  }
+
+  if($("pipelineStatus")){
+    if(whatsapp === 0){
+      $("pipelineStatus").innerText = "Boş";
+    }else if(sales === 0){
+      $("pipelineStatus").innerText = "Kapanış Bekliyor";
+    }else{
+      $("pipelineStatus").innerText = "Satış Aktif";
+    }
+  }
+
+  if($("pipelineNote")){
+    $("pipelineNote").innerText =
+      "WhatsApp'a geçen kişiler satış potansiyeli taşır. Eğer WhatsApp geçişi var ama satış yoksa, sorun çoğunlukla fiyat, güven, teslimat veya kapanış mesajlarında aranmalıdır.";
+  }
+}
+
+  function updateCustomerTrustAssets(){
+  const tracking = getEventCount("tracking_submit");
+  const sales = getEventCount("sale");
+
+  if($("realProductAsset")) $("realProductAsset").innerText = "Eksik";
+  if($("deliveryProofAsset")) $("deliveryProofAsset").innerText = sales > 0 ? "Oluşuyor" : "Eksik";
+  if($("customerReviewAsset")) $("customerReviewAsset").innerText = sales > 0 ? "Bekleniyor" : "Eksik";
+
+  if($("trustAssetScore")){
+    if(sales > 0){
+      $("trustAssetScore").innerText = "Orta";
+    }else if(tracking > 0){
+      $("trustAssetScore").innerText = "Başlangıç";
+    }else{
+      $("trustAssetScore").innerText = "Düşük";
+    }
+  }
+
+  if($("trustAssetNote")){
+    $("trustAssetNote").innerText =
+      "Satışı güçlendirmek için gerçek ürün görselleri, teslimat kanıtları ve müşteri geri bildirimleri toplanmalı. VAERO için güven varlıkları reklamdan önce satış kapanışını güçlendiren ana unsurdur.";
+  }
+}
+
   function updateStockSupplyReadiness(){
   const sales = getEventCount("sale");
   const whatsapp = getEventCount("whatsapp_click");
@@ -2435,6 +2586,8 @@ box.innerText =
     updateNextStepBoard();
     updateDailyOperatorLog();
     updateStockSupplyReadiness();
+    updateCustomerTrustAssets();
+    updateWhatsappSalesPipeline();
     if($("bestHour")){
   $("bestHour").innerText = getPeakHour("page_view");
 }
