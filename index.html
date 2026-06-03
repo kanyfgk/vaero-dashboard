@@ -695,6 +695,49 @@ a{
       <small>WhatsApp geçişleri</small>
     </div>
 
+    <div class="section">
+  <h2>Ad & Traffic Source Control</h2>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Ana Trafik Kaynağı</div>
+      <div id="mainTrafficSource" class="value">Bilinmiyor</div>
+      <small>Meta / Instagram / Direct</small>
+    </div>
+
+    <div class="card">
+      <div class="label">Reklam Verimi</div>
+      <div id="adEfficiency" class="value">Beklemede</div>
+      <small>WhatsApp oranına göre</small>
+    </div>
+
+    <div class="card">
+      <div class="label">Organik Güç</div>
+      <div id="organicStrength" class="value">İzleniyor</div>
+      <small>Reels / story etkisi</small>
+    </div>
+
+    <div class="card">
+      <div class="label">Trafik Kararı</div>
+      <div id="trafficDecision" class="value">Bekle</div>
+      <small>Reklam artır / durdur / test et</small>
+    </div>
+  </div>
+
+  <div id="trafficSourceNote" style="
+    margin-top:16px;
+    padding:16px;
+    border-radius:18px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.08);
+    color:#f4efe6;
+    line-height:1.6;
+    font-size:14px;
+  ">
+    Trafik kaynağı analizi bekleniyor...
+  </div>
+</div>
+
     <div class="card">
       <div class="label">Kapanış Riski</div>
       <div id="closingRisk" class="value">Beklemede</div>
@@ -1785,6 +1828,55 @@ document.addEventListener("DOMContentLoaded",function(){
   }).join("");
 }
 
+  function updateTrafficSourceControl(){
+  const pageViews = getEventCount("page_view");
+  const whatsapp = getEventCount("whatsapp_click");
+  const sales = getEventCount("sale");
+
+  const whatsappRate = pageViews > 0 ? (whatsapp / pageViews) * 100 : 0;
+
+  if($("mainTrafficSource")) $("mainTrafficSource").innerText = "Takip Edilecek";
+
+  if($("adEfficiency")){
+    if(pageViews === 0){
+      $("adEfficiency").innerText = "Veri Yok";
+    }else if(whatsappRate >= 10){
+      $("adEfficiency").innerText = "İyi";
+    }else if(whatsappRate >= 5){
+      $("adEfficiency").innerText = "Orta";
+    }else{
+      $("adEfficiency").innerText = "Zayıf";
+    }
+  }
+
+  if($("organicStrength")){
+    if(pageViews >= 100 && whatsappRate >= 7){
+      $("organicStrength").innerText = "Güçleniyor";
+    }else if(pageViews > 0){
+      $("organicStrength").innerText = "Testte";
+    }else{
+      $("organicStrength").innerText = "Bekliyor";
+    }
+  }
+
+  if($("trafficDecision")){
+    if(pageViews >= 100 && whatsappRate < 5){
+      $("trafficDecision").innerText = "Reklamı Zorlama";
+    }else if(whatsappRate >= 10 && sales === 0){
+      $("trafficDecision").innerText = "Kapanışı Düzelt";
+    }else if(whatsappRate >= 10 && sales > 0){
+      $("trafficDecision").innerText = "Ölçekle";
+    }else{
+      $("trafficDecision").innerText = "Test Et";
+    }
+  }
+
+  if($("trafficSourceNote")){
+    $("trafficSourceNote").innerText =
+      "Trafik kaynağı henüz net ayrışmıyor. Sonraki geliştirmede Instagram bio, reklam, story, reels ve direct link ayrı ayrı event/meta kaydıyla izlenmeli.";
+  }
+}
+
   function updateWhatsappSalesPipeline(){
   const whatsapp = getEventCount("whatsapp_click");
   const sales = getEventCount("sale");
@@ -2587,6 +2679,7 @@ box.innerText =
     updateDailyOperatorLog();
     updateStockSupplyReadiness();
     updateCustomerTrustAssets();
+    updateTrafficSourceControl();
     updateWhatsappSalesPipeline();
     if($("bestHour")){
   $("bestHour").innerText = getPeakHour("page_view");
