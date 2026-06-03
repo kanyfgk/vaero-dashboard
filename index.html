@@ -586,6 +586,287 @@ a{
   </div>
 </div>
 
+    <div class="section">
+  <h2>VAERO War Room</h2>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Kırmızı Alan</div>
+      <div id="warRed" class="value">-</div>
+      <small>Kritik risk</small>
+    </div>
+
+    <div class="section">
+  <h2>Health Ministry Tracker</h2>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Başvuru Durumu</div>
+      <div id="healthStatus" class="value">Sorulacak</div>
+      <small>Randevu / ön görüşme bekleniyor</small>
+    </div>
+
+    <div class="section">
+  <h2>Supplier Document Tracker</h2>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Üretici Cevabı</div>
+      <div id="supplierReply" class="value">Tamamlandı</div>
+      <small>“Everything we have sent” cevabı alındı</small>
+    </div>
+
+    <div class="section">
+  <h2>Import Route Strategy</h2>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Ana Rota</div>
+      <div id="mainImportRoute" class="value">KKTC</div>
+      <small>Öncelik doğrudan ithalat</small>
+    </div>
+
+    <div class="section">
+  <h2>Legal / Compliance Risk Map</h2>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Sağlık Riski</div>
+      <div id="legalHealthRisk" class="value">Orta</div>
+      <small>Koku dosyası kurum cevabına bağlı</small>
+    </div>
+
+    <div class="section">
+  <h2>Operational Next-Step Board</h2>
+
+  <div id="nextStepBoard" style="
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:16px;
+    margin-top:14px;
+  ">
+    Operasyon adımları yükleniyor...
+  </div>
+</div>
+
+    <div class="section">
+  <h2>VAERO Daily Operator Log</h2>
+
+  <div id="dailyOperatorLog" style="
+    padding:16px;
+    border-radius:18px;
+    background:rgba(0,0,0,.18);
+    border:1px solid rgba(255,255,255,.08);
+    color:#f4efe6;
+    line-height:1.6;
+    font-size:14px;
+  ">
+    Günlük operasyon kaydı bekleniyor...
+  </div>
+</div>
+
+    <div class="section">
+  <h2>Stock & Supply Readiness</h2>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Cihaz Stok Durumu</div>
+      <div id="deviceStockStatus" class="value">Sınırlı</div>
+      <small>İlk test / satış stoğu</small>
+    </div>
+
+    <div class="card">
+      <div class="label">Koku Stok Durumu</div>
+      <div id="fragranceStockStatus" class="value">Sınırlı</div>
+      <small>Cologne, Sweet Flower, ShangriLa</small>
+    </div>
+
+    <div class="card">
+      <div class="label">Tedarik Riski</div>
+      <div id="supplyRisk" class="value">Orta</div>
+      <small>İzin ve ithalat sonucuna bağlı</small>
+    </div>
+
+    <div class="card">
+      <div class="label">Satışa Hazırlık</div>
+      <div id="salesReadiness" class="value">Hazırlık</div>
+      <small>Belge + içerik + stok doğrulanacak</small>
+    </div>
+  </div>
+
+  <div id="stockSupplyNote" style="
+    margin-top:16px;
+    padding:16px;
+    border-radius:18px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.08);
+    color:#f4efe6;
+    line-height:1.6;
+    font-size:14px;
+  ">
+    Stok ve tedarik hazırlığı bekleniyor...
+  </div>
+</div>
+
+    <div class="card">
+      <div class="label">Gümrük Riski</div>
+      <div id="legalCustomsRisk" class="value">Düşük-Orta</div>
+      <small>Taşıma raporları mevcut</small>
+    </div>
+
+    <div class="card">
+      <div class="label">Cihaz Uygunluğu</div>
+      <div id="legalDeviceRisk" class="value">Düşük</div>
+      <small>CE, EMC, LVD, FCC mevcut</small>
+    </div>
+
+    <div class="card">
+      <div class="label">Koku Uygunluğu</div>
+      <div id="legalFragranceRisk" class="value">Orta</div>
+      <small>IFRA/SDS var, COA/Allergen yok</small>
+    </div>
+  </div>
+
+  <div id="legalRiskNote" style="
+    margin-top:16px;
+    padding:16px;
+    border-radius:18px;
+    background:rgba(0,0,0,.18);
+    border:1px solid rgba(255,255,255,.08);
+    color:#f4efe6;
+    line-height:1.6;
+    font-size:14px;
+  ">
+    Mevcut belge seti cihaz tarafında güçlü, koku tarafında ise orta seviyededir. Nihai risk Sağlık Bakanlığı ve gümrük görüşünden sonra netleşecektir.
+  </div>
+</div>
+
+    <div class="card">
+      <div class="label">Alternatif Rota</div>
+      <div id="backupImportRoute" class="value">Beklemede</div>
+      <small>Güney Kıbrıs / Gürcistan opsiyonu</small>
+    </div>
+
+    <div class="card">
+      <div class="label">Rota Riski</div>
+      <div id="importRouteRisk" class="value">Orta</div>
+      <small>Sağlık Bakanlığı kararına bağlı</small>
+    </div>
+
+    <div class="card">
+      <div class="label">Karar Noktası</div>
+      <div id="importDecisionPoint" class="value">Randevu</div>
+      <small>Önce KKTC cevabı alınacak</small>
+    </div>
+  </div>
+
+  <div id="importRouteNote" style="
+    margin-top:16px;
+    padding:16px;
+    border-radius:18px;
+    background:rgba(201,168,104,.12);
+    border:1px solid rgba(201,168,104,.22);
+    color:#f4efe6;
+    line-height:1.6;
+    font-size:14px;
+  ">
+    Öncelik KKTC Sağlık Bakanlığı ve gümrük üzerinden doğrudan ithalat yoludur. Alternatif rota ancak mevcut belge seti KKTC için yeterli görülmezse değerlendirilecek.
+  </div>
+</div>
+
+    <div class="card">
+      <div class="label">Cihaz Dosyası</div>
+      <div id="supplierDeviceDocs" class="value">Güçlü</div>
+      <small>CE, EMC, LVD, FCC, Verification</small>
+    </div>
+
+    <div class="card">
+      <div class="label">Koku Dosyası</div>
+      <div id="supplierFragranceDocs" class="value">Orta</div>
+      <small>IFRA, SDS, SGS, taşıma raporları</small>
+    </div>
+
+    <div class="card">
+      <div class="label">Belge Durumu</div>
+      <div id="supplierDocStatus" class="value">Kilitli</div>
+      <small>Yeni belge beklenmiyor</small>
+    </div>
+  </div>
+
+  <div id="supplierNote" style="
+    margin-top:16px;
+    padding:16px;
+    border-radius:18px;
+    background:rgba(0,0,0,.18);
+    border:1px solid rgba(255,255,255,.08);
+    color:#f4efe6;
+    line-height:1.6;
+    font-size:14px;
+  ">
+    Üretici, elindeki tüm belge paketini gönderdiğini belirtti. Bundan sonraki kritik nokta üreticiden belge istemek değil, KKTC Sağlık Bakanlığı ve gümrük tarafında mevcut belgelerin yeterliliğini doğrulamaktır.
+  </div>
+</div>
+
+    <div class="card">
+      <div class="label">Mevcut Sağlık Dosyası</div>
+      <div id="healthDocs" class="value">Orta</div>
+      <small>IFRA, SDS, SGS, taşıma raporları</small>
+    </div>
+
+    <div class="card">
+      <div class="label">Ana Belirsizlik</div>
+      <div id="healthRisk" class="value">Koku</div>
+      <small>COA / Allergen istenebilir</small>
+    </div>
+
+    <div class="card">
+      <div class="label">Sonraki Adım</div>
+      <div id="healthNextStep" class="value">Sor</div>
+      <small>Yeterli belge listesi doğrulanacak</small>
+    </div>
+  </div>
+
+  <div id="healthNote" style="
+    margin-top:16px;
+    padding:16px;
+    border-radius:18px;
+    background:rgba(201,168,104,.12);
+    border:1px solid rgba(201,168,104,.22);
+    color:#f4efe6;
+    line-height:1.6;
+    font-size:14px;
+  ">
+    Sağlık Bakanlığına sorulacak: IFRA, SDS/MSDS, SGS kimyasal test raporları, Air/Sea Transport ve Dangerous Goods raporları araç içi koku sistemi başvurusu için yeterli mi? Ek olarak COA, Allergen Declaration, REACH veya SVHC istenir mi?
+  </div>
+</div>  
+
+    <div class="card">
+      <div class="label">Sarı Alan</div>
+      <div id="warYellow" class="value">-</div>
+      <small>Dikkat gereken alan</small>
+    </div>
+
+    <div class="card">
+      <div class="label">Yeşil Alan</div>
+      <div id="warGreen" class="value">-</div>
+      <small>Çalışan sistem</small>
+    </div>
+  </div>
+
+  <div id="warRoomNote" style="
+    margin-top:16px;
+    padding:16px;
+    border-radius:18px;
+    background:rgba(0,0,0,.18);
+    border:1px solid rgba(255,255,255,.08);
+    color:#f4efe6;
+    line-height:1.6;
+    font-size:14px;
+  ">
+    Operasyon haritası bekleniyor...
+  </div>
+</div>
+
     <div class="card">
       <div class="label">Koku Belgeleri</div>
       <div class="value">Orta</div>
@@ -1418,6 +1699,214 @@ document.addEventListener("DOMContentLoaded",function(){
   }).join("");
 }
 
+  function updateStockSupplyReadiness(){
+  const sales = getEventCount("sale");
+  const whatsapp = getEventCount("whatsapp_click");
+
+  if($("deviceStockStatus")) $("deviceStockStatus").innerText = "Sınırlı";
+  if($("fragranceStockStatus")) $("fragranceStockStatus").innerText = "Sınırlı";
+
+  if($("supplyRisk")){
+    $("supplyRisk").innerText = "Orta";
+  }
+
+  if($("salesReadiness")){
+    if(sales > 0){
+      $("salesReadiness").innerText = "Aktif";
+    }else if(whatsapp > 0){
+      $("salesReadiness").innerText = "Yakın";
+    }else{
+      $("salesReadiness").innerText = "Hazırlık";
+    }
+  }
+
+  if($("stockSupplyNote")){
+    $("stockSupplyNote").innerText =
+      "Mevcut aşamada stok küçük test/satış ölçeğinde düşünülmeli. Büyük stok kararı Sağlık Bakanlığı cevabı, ilk müşteri deneyimi ve WhatsApp satış dönüşümüne göre verilmelidir.";
+  }
+}
+
+  function updateDailyOperatorLog(){
+  const pageViews = getEventCount("page_view");
+  const whatsapp = getEventCount("whatsapp_click");
+  const tracking = getEventCount("tracking_submit");
+  const sales = getEventCount("sale");
+
+  let log = "";
+
+  if(pageViews === 0){
+    log =
+      "Bugünkü kayıt: Sistem veri bekliyor. Henüz anlamlı trafik oluşmadı.";
+  }
+  else if(sales === 0 && whatsapp > 0){
+    log =
+      "Bugünkü kayıt: İnsanlar ilgi gösteriyor fakat satış kapanışı henüz oluşmadı. WhatsApp konuşmaları, güven kanıtı ve teslimat anlatısı takip edilmeli.";
+  }
+  else if(sales > 0){
+    log =
+      "Bugünkü kayıt: Satış oluştu. Bu satışın kaynağı, içerik türü, müşteri itirazları ve teslimat deneyimi hafızaya alınmalı.";
+  }
+  else if(tracking > 0){
+    log =
+      "Bugünkü kayıt: Kargo/takip tarafında güven merakı oluştu. Teslimat şeffaflığı içerik ve satış akışında daha görünür yapılmalı.";
+  }
+  else{
+    log =
+      "Bugünkü kayıt: Trafik oluşuyor. Henüz güçlü aksiyon sinyali yok. İçerik hook ve WhatsApp CTA izlenmeli.";
+  }
+
+  if($("dailyOperatorLog")){
+    $("dailyOperatorLog").innerText =
+      log +
+      "\n\nAnlık veri: " +
+      pageViews + " ziyaretçi, " +
+      whatsapp + " WhatsApp geçişi, " +
+      tracking + " takip kullanımı, " +
+      sales + " satış.";
+  }
+}
+
+  function updateNextStepBoard(){
+  const steps = [
+    {
+      title:"1. Sağlık Bakanlığı",
+      status:"Beklemede",
+      note:"Mevcut IFRA, SDS, SGS ve taşıma raporlarının yeterli olup olmadığı sorulacak."
+    },
+    {
+      title:"2. İlk Teslimat Kanıtı",
+      status:"Hazırlanacak",
+      note:"Gerçek ürün, paket, araç içi kullanım ve müşteri deneyimi içerikleri toplanacak."
+    },
+    {
+      title:"3. WhatsApp Satış Akışı",
+      status:"Geliştirilecek",
+      note:"Fiyat, güven, teslimat ve kapanış mesajları daha net hale getirilecek."
+    },
+    {
+      title:"4. Dashboard Veri Kalitesi",
+      status:"Takipte",
+      note:"Sale eventi, kaynak takibi ve WhatsApp sonrası sonuçlar daha net ölçülecek."
+    }
+  ];
+
+  const box = $("nextStepBoard");
+  if(!box) return;
+
+  box.innerHTML = steps.map(step => `
+    <div style="
+      padding:18px;
+      border-radius:18px;
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.08);
+      color:#f4efe6;
+    ">
+      <div style="font-size:13px;color:#c9c1b5;margin-bottom:8px">${step.status}</div>
+      <strong style="font-size:16px">${step.title}</strong>
+      <p style="font-size:14px;line-height:1.5;color:#d8d3cb">${step.note}</p>
+    </div>
+  `).join("");
+}
+
+  function updateLegalComplianceRiskMap(){
+  if($("legalHealthRisk")) $("legalHealthRisk").innerText = "Orta";
+  if($("legalCustomsRisk")) $("legalCustomsRisk").innerText = "Düşük-Orta";
+  if($("legalDeviceRisk")) $("legalDeviceRisk").innerText = "Düşük";
+  if($("legalFragranceRisk")) $("legalFragranceRisk").innerText = "Orta";
+
+  if($("legalRiskNote")){
+    $("legalRiskNote").innerText =
+      "Cihaz tarafı güçlü görünüyor: CE, EMC, LVD, FCC ve Verification mevcut. Koku tarafı orta güçlü: IFRA, SDS/MSDS, SGS kimyasal testleri ve taşıma raporları mevcut; ancak COA, Allergen Declaration, REACH ve SVHC bulunmuyor. Nihai karar için Sağlık Bakanlığı ve gümrük görüşü alınmalı.";
+  }
+}
+
+  function updateImportRouteStrategy(){
+  if($("mainImportRoute")) $("mainImportRoute").innerText = "KKTC";
+  if($("backupImportRoute")) $("backupImportRoute").innerText = "Beklemede";
+  if($("importRouteRisk")) $("importRouteRisk").innerText = "Orta";
+  if($("importDecisionPoint")) $("importDecisionPoint").innerText = "Randevu";
+
+  if($("importRouteNote")){
+    $("importRouteNote").innerText =
+      "Öncelik doğrudan KKTC ithalatıdır. Güney Kıbrıs / Gürcistan şirketi gibi alternatif rota yalnızca Sağlık Bakanlığı veya gümrük tarafında mevcut belgeler yetersiz görülürse ayrıca değerlendirilecek.";
+  }
+}
+
+  function updateSupplierDocumentTracker(){
+  if($("supplierReply")) $("supplierReply").innerText = "Tamamlandı";
+  if($("supplierDeviceDocs")) $("supplierDeviceDocs").innerText = "Güçlü";
+  if($("supplierFragranceDocs")) $("supplierFragranceDocs").innerText = "Orta";
+  if($("supplierDocStatus")) $("supplierDocStatus").innerText = "Kilitli";
+
+  if($("supplierNote")){
+    $("supplierNote").innerText =
+      "Üretici, elindeki tüm belge paketini gönderdiğini söyledi. Mevcut belgeler: cihaz tarafında CE, EMC, LVD, FCC ve Verification; koku tarafında IFRA, SDS/MSDS, SGS kimyasal testleri, Air/Sea Transport ve Dangerous Goods raporları. Eksik görünen COA, Allergen Declaration, REACH, SVHC ve RoHS Declaration için yeni belge beklenmiyor.";
+  }
+}
+
+  function updateHealthMinistryTracker(){
+  const status = "Sorulacak";
+  const docs = "Orta";
+  const risk = "Koku";
+  const next = "Sor";
+
+  if($("healthStatus")) $("healthStatus").innerText = status;
+  if($("healthDocs")) $("healthDocs").innerText = docs;
+  if($("healthRisk")) $("healthRisk").innerText = risk;
+  if($("healthNextStep")) $("healthNextStep").innerText = next;
+
+  if($("healthNote")){
+    $("healthNote").innerText =
+      "Sağlık Bakanlığına sorulacak ana konu: IFRA, SDS/MSDS, SGS kimyasal test raporları, Air/Sea Transport ve Dangerous Goods raporları araç içi koku sistemi için yeterli mi? Ek olarak COA, Allergen Declaration, REACH veya SVHC istenir mi?";
+  }
+}
+
+  function updateWarRoom(){
+  const pageViews = getEventCount("page_view");
+  const whatsapp = getEventCount("whatsapp_click");
+  const tracking = getEventCount("tracking_submit");
+  const sales = getEventCount("sale");
+
+  let red = "Yok";
+  let yellow = "Veri";
+  let green = "Site";
+
+  if(sales === 0 && whatsapp >= 10){
+    red = "Kapanış";
+    yellow = "Güven";
+    green = "Trafik";
+  }
+  else if(pageViews >= 100 && whatsapp < 7){
+    red = "CTA";
+    yellow = "Kitle";
+    green = "Trafik";
+  }
+  else if(tracking > whatsapp){
+    red = "Güven";
+    yellow = "Teslimat";
+    green = "Merak";
+  }
+  else if(pageViews < 50){
+    red = "Veri Az";
+    yellow = "İçerik";
+    green = "Sistem";
+  }
+  else{
+    red = "Yok";
+    yellow = "Optimizasyon";
+    green = "Akış";
+  }
+
+  if($("warRed")) $("warRed").innerText = red;
+  if($("warYellow")) $("warYellow").innerText = yellow;
+  if($("warGreen")) $("warGreen").innerText = green;
+
+  if($("warRoomNote")){
+    $("warRoomNote").innerText =
+      "War Room özeti: Kırmızı alan öncelikli çözülmesi gereken risk; sarı alan takip edilmesi gereken operasyon noktası; yeşil alan şu an çalışan güçlü tarafı gösterir.";
+  }
+}
+
   function updateLeakDetector(){
   const pageViews = getEventCount("page_view");
   const whatsapp = getEventCount("whatsapp_click");
@@ -1938,6 +2427,14 @@ box.innerText =
     updateDecisionEngine();
     updateCommandCenter();
     updateLeakDetector();
+    updateWarRoom();
+    updateHealthMinistryTracker();
+    updateSupplierDocumentTracker();
+    updateImportRouteStrategy();
+    updateLegalComplianceRiskMap();
+    updateNextStepBoard();
+    updateDailyOperatorLog();
+    updateStockSupplyReadiness();
     if($("bestHour")){
   $("bestHour").innerText = getPeakHour("page_view");
 }
