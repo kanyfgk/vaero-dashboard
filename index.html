@@ -386,6 +386,59 @@ a{
   line-height:1.6;
   font-size:14px;
 }
+
+  .customerTextarea{
+  width:100%;
+  min-height:130px;
+  resize:vertical;
+  border:none;
+  outline:none;
+  border-radius:18px;
+  padding:16px;
+  background:rgba(0,0,0,.22);
+  color:#f4efe6;
+  font-size:14px;
+  line-height:1.5;
+}
+.customerActions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+.customerActions button{
+  border:none;
+  border-radius:14px;
+  padding:12px 16px;
+  background:#c9a868;
+  color:#111;
+  font-weight:700;
+  cursor:pointer;
+}
+.customerList{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:14px;
+  margin-top:16px;
+}
+.customerItem{
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;
+  padding:16px;
+}
+.customerItem b{
+  display:block;
+  font-size:16px;
+  margin-bottom:8px;
+}
+.customerItem span{
+  display:block;
+  font-size:13px;
+  color:#c9c1b5;
+  margin-bottom:5px;
+}
+
   
 </style>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -529,507 +582,7 @@ a{
 </div>
 
 <div id="status" class="status">Demo veri aktif — gerçek Supabase bağlantısı sonraki adımda bağlanacak.</div>
-  <div class="section">
-  <h2>Compliance & Import Readiness</h2>
-
-  <div class="grid">
-    <div class="card">
-      <div class="label">Cihaz Belgeleri</div>
-      <div class="value">Güçlü</div>
-      <small>CE, EMC, LVD, FCC mevcut</small>
-    </div>
-
-    <div class="section">
-  <h2>VAERO Memory Timeline</h2>
-
-  <div id="memoryTimeline" style="
-    padding:16px;
-    border-radius:18px;
-    background:rgba(0,0,0,.18);
-    border:1px solid rgba(255,255,255,.08);
-    color:#f4efe6;
-    line-height:1.6;
-    font-size:14px;
-  ">
-    Hafıza kayıtları yükleniyor...
-  </div>
-</div>
-
-    <div class="section">
-  <h2>VAERO Command Center</h2>
-
-  <div id="commandCenterBox" style="
-    padding:20px;
-    border-radius:20px;
-    background:rgba(201,168,104,.14);
-    border:1px solid rgba(201,168,104,.28);
-    color:#f4efe6;
-    line-height:1.6;
-    font-size:15px;
-  ">
-    Bugünün ana komutu bekleniyor...
-  </div>
-</div>
-
-    <div class="section">
-  <h2>AI Leak Detector</h2>
-
-  <div id="leakDetectorBox" style="
-    padding:20px;
-    border-radius:20px;
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.08);
-    color:#f4efe6;
-    line-height:1.6;
-    font-size:15px;
-  ">
-    Kayıp analizi bekleniyor...
-  </div>
-</div>
-
-    <div class="section">
-  <h2>VAERO War Room</h2>
-
-  <div class="grid">
-    <div class="card">
-      <div class="label">Kırmızı Alan</div>
-      <div id="warRed" class="value">-</div>
-      <small>Kritik risk</small>
-    </div>
-
-    <div class="section">
-  <h2>Health Ministry Tracker</h2>
-
-  <div class="grid">
-    <div class="card">
-      <div class="label">Başvuru Durumu</div>
-      <div id="healthStatus" class="value">Sorulacak</div>
-      <small>Randevu / ön görüşme bekleniyor</small>
-    </div>
-
-    <div class="section">
-  <h2>Supplier Document Tracker</h2>
-
-  <div class="grid">
-    <div class="card">
-      <div class="label">Üretici Cevabı</div>
-      <div id="supplierReply" class="value">Tamamlandı</div>
-      <small>“Everything we have sent” cevabı alındı</small>
-    </div>
-
-    <div class="section">
-  <h2>Import Route Strategy</h2>
-
-  <div class="grid">
-    <div class="card">
-      <div class="label">Ana Rota</div>
-      <div id="mainImportRoute" class="value">KKTC</div>
-      <small>Öncelik doğrudan ithalat</small>
-    </div>
-
-    <div class="section">
-  <h2>Legal / Compliance Risk Map</h2>
-
-  <div class="grid">
-    <div class="card">
-      <div class="label">Sağlık Riski</div>
-      <div id="legalHealthRisk" class="value">Orta</div>
-      <small>Koku dosyası kurum cevabına bağlı</small>
-    </div>
-
-    <div class="section">
-  <h2>Operational Next-Step Board</h2>
-
-  <div id="nextStepBoard" style="
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:16px;
-    margin-top:14px;
-  ">
-    Operasyon adımları yükleniyor...
-  </div>
-</div>
-
-    <div class="section">
-  <h2>VAERO Daily Operator Log</h2>
-
-  <div id="dailyOperatorLog" style="
-    padding:16px;
-    border-radius:18px;
-    background:rgba(0,0,0,.18);
-    border:1px solid rgba(255,255,255,.08);
-    color:#f4efe6;
-    line-height:1.6;
-    font-size:14px;
-  ">
-    Günlük operasyon kaydı bekleniyor...
-  </div>
-</div>
-
-    <div class="section">
-  <h2>Stock & Supply Readiness</h2>
-
-  <div class="grid">
-    <div class="card">
-      <div class="label">Cihaz Stok Durumu</div>
-      <div id="deviceStockStatus" class="value">Sınırlı</div>
-      <small>İlk test / satış stoğu</small>
-    </div>
-
-    <div class="section">
-  <h2>Customer Trust Asset Board</h2>
-
-  <div class="grid">
-    <div class="card">
-      <div class="label">Gerçek Ürün Görseli</div>
-      <div id="realProductAsset" class="value">Eksik</div>
-      <small>Ev / araç içi gerçek kullanım</small>
-    </div>
-
-    <div class="section">
-  <h2>WhatsApp Sales Pipeline</h2>
-
-  <div class="grid">
-    <div class="card">
-      <div class="label">WhatsApp Adayı</div>
-      <div id="pipelineLeads" class="value">0</div>
-      <small>WhatsApp geçişleri</small>
-    </div>
-
-    <div class="section">
-  <h2>Ad & Traffic Source Control</h2>
-
-  <div class="grid">
-    <div class="card">
-      <div class="label">Ana Trafik Kaynağı</div>
-      <div id="mainTrafficSource" class="value">Bilinmiyor</div>
-      <small>Meta / Instagram / Direct</small>
-    </div>
-
-    <div class="card">
-      <div class="label">Reklam Verimi</div>
-      <div id="adEfficiency" class="value">Beklemede</div>
-      <small>WhatsApp oranına göre</small>
-    </div>
-
-    <div class="card">
-      <div class="label">Organik Güç</div>
-      <div id="organicStrength" class="value">İzleniyor</div>
-      <small>Reels / story etkisi</small>
-    </div>
-
-    <div class="card">
-      <div class="label">Trafik Kararı</div>
-      <div id="trafficDecision" class="value">Bekle</div>
-      <small>Reklam artır / durdur / test et</small>
-    </div>
-  </div>
-
-  <div id="trafficSourceNote" style="
-    margin-top:16px;
-    padding:16px;
-    border-radius:18px;
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.08);
-    color:#f4efe6;
-    line-height:1.6;
-    font-size:14px;
-  ">
-    Trafik kaynağı analizi bekleniyor...
-  </div>
-</div>
-
-    <div class="card">
-      <div class="label">Kapanış Riski</div>
-      <div id="closingRisk" class="value">Beklemede</div>
-      <small>Satışa dönmeyen ilgi</small>
-    </div>
-
-    <div class="card">
-      <div class="label">Güven İhtiyacı</div>
-      <div id="trustNeed" class="value">Orta</div>
-      <small>Teslimat / belge / gerçek ürün</small>
-    </div>
-
-    <div class="card">
-      <div class="label">Pipeline Durumu</div>
-      <div id="pipelineStatus" class="value">İzleniyor</div>
-      <small>WhatsApp sonrası takip</small>
-    </div>
-  </div>
-
-  <div id="pipelineNote" style="
-    margin-top:16px;
-    padding:16px;
-    border-radius:18px;
-    background:rgba(0,0,0,.18);
-    border:1px solid rgba(255,255,255,.08);
-    color:#f4efe6;
-    line-height:1.6;
-    font-size:14px;
-  ">
-    WhatsApp satış hattı bekleniyor...
-  </div>
-</div>
-
-    <div class="card">
-      <div class="label">Teslimat Kanıtı</div>
-      <div id="deliveryProofAsset" class="value">Eksik</div>
-      <small>Paket, kargo, teslimat süreci</small>
-    </div>
-
-    <div class="card">
-      <div class="label">Müşteri Yorumu</div>
-      <div id="customerReviewAsset" class="value">Eksik</div>
-      <small>WhatsApp / story geri bildirimi</small>
-    </div>
-
-    <div class="card">
-      <div class="label">Güven Skoru</div>
-      <div id="trustAssetScore" class="value">Düşük</div>
-      <small>Sosyal kanıt seviyesi</small>
-    </div>
-  </div>
-
-  <div id="trustAssetNote" style="
-    margin-top:16px;
-    padding:16px;
-    border-radius:18px;
-    background:rgba(201,168,104,.12);
-    border:1px solid rgba(201,168,104,.22);
-    color:#f4efe6;
-    line-height:1.6;
-    font-size:14px;
-  ">
-    Güven varlıkları bekleniyor...
-  </div>
-</div>
-
-    <div class="card">
-      <div class="label">Koku Stok Durumu</div>
-      <div id="fragranceStockStatus" class="value">Sınırlı</div>
-      <small>Cologne, Sweet Flower, ShangriLa</small>
-    </div>
-
-    <div class="card">
-      <div class="label">Tedarik Riski</div>
-      <div id="supplyRisk" class="value">Orta</div>
-      <small>İzin ve ithalat sonucuna bağlı</small>
-    </div>
-
-    <div class="card">
-      <div class="label">Satışa Hazırlık</div>
-      <div id="salesReadiness" class="value">Hazırlık</div>
-      <small>Belge + içerik + stok doğrulanacak</small>
-    </div>
-  </div>
-
-  <div id="stockSupplyNote" style="
-    margin-top:16px;
-    padding:16px;
-    border-radius:18px;
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.08);
-    color:#f4efe6;
-    line-height:1.6;
-    font-size:14px;
-  ">
-    Stok ve tedarik hazırlığı bekleniyor...
-  </div>
-</div>
-
-    <div class="card">
-      <div class="label">Gümrük Riski</div>
-      <div id="legalCustomsRisk" class="value">Düşük-Orta</div>
-      <small>Taşıma raporları mevcut</small>
-    </div>
-
-    <div class="card">
-      <div class="label">Cihaz Uygunluğu</div>
-      <div id="legalDeviceRisk" class="value">Düşük</div>
-      <small>CE, EMC, LVD, FCC mevcut</small>
-    </div>
-
-    <div class="card">
-      <div class="label">Koku Uygunluğu</div>
-      <div id="legalFragranceRisk" class="value">Orta</div>
-      <small>IFRA/SDS var, COA/Allergen yok</small>
-    </div>
-  </div>
-
-  <div id="legalRiskNote" style="
-    margin-top:16px;
-    padding:16px;
-    border-radius:18px;
-    background:rgba(0,0,0,.18);
-    border:1px solid rgba(255,255,255,.08);
-    color:#f4efe6;
-    line-height:1.6;
-    font-size:14px;
-  ">
-    Mevcut belge seti cihaz tarafında güçlü, koku tarafında ise orta seviyededir. Nihai risk Sağlık Bakanlığı ve gümrük görüşünden sonra netleşecektir.
-  </div>
-</div>
-
-    <div class="card">
-      <div class="label">Alternatif Rota</div>
-      <div id="backupImportRoute" class="value">Beklemede</div>
-      <small>Güney Kıbrıs / Gürcistan opsiyonu</small>
-    </div>
-
-    <div class="card">
-      <div class="label">Rota Riski</div>
-      <div id="importRouteRisk" class="value">Orta</div>
-      <small>Sağlık Bakanlığı kararına bağlı</small>
-    </div>
-
-    <div class="card">
-      <div class="label">Karar Noktası</div>
-      <div id="importDecisionPoint" class="value">Randevu</div>
-      <small>Önce KKTC cevabı alınacak</small>
-    </div>
-  </div>
-
-  <div id="importRouteNote" style="
-    margin-top:16px;
-    padding:16px;
-    border-radius:18px;
-    background:rgba(201,168,104,.12);
-    border:1px solid rgba(201,168,104,.22);
-    color:#f4efe6;
-    line-height:1.6;
-    font-size:14px;
-  ">
-    Öncelik KKTC Sağlık Bakanlığı ve gümrük üzerinden doğrudan ithalat yoludur. Alternatif rota ancak mevcut belge seti KKTC için yeterli görülmezse değerlendirilecek.
-  </div>
-</div>
-
-    <div class="card">
-      <div class="label">Cihaz Dosyası</div>
-      <div id="supplierDeviceDocs" class="value">Güçlü</div>
-      <small>CE, EMC, LVD, FCC, Verification</small>
-    </div>
-
-    <div class="card">
-      <div class="label">Koku Dosyası</div>
-      <div id="supplierFragranceDocs" class="value">Orta</div>
-      <small>IFRA, SDS, SGS, taşıma raporları</small>
-    </div>
-
-    <div class="card">
-      <div class="label">Belge Durumu</div>
-      <div id="supplierDocStatus" class="value">Kilitli</div>
-      <small>Yeni belge beklenmiyor</small>
-    </div>
-  </div>
-
-  <div id="supplierNote" style="
-    margin-top:16px;
-    padding:16px;
-    border-radius:18px;
-    background:rgba(0,0,0,.18);
-    border:1px solid rgba(255,255,255,.08);
-    color:#f4efe6;
-    line-height:1.6;
-    font-size:14px;
-  ">
-    Üretici, elindeki tüm belge paketini gönderdiğini belirtti. Bundan sonraki kritik nokta üreticiden belge istemek değil, KKTC Sağlık Bakanlığı ve gümrük tarafında mevcut belgelerin yeterliliğini doğrulamaktır.
-  </div>
-</div>
-
-    <div class="card">
-      <div class="label">Mevcut Sağlık Dosyası</div>
-      <div id="healthDocs" class="value">Orta</div>
-      <small>IFRA, SDS, SGS, taşıma raporları</small>
-    </div>
-
-    <div class="card">
-      <div class="label">Ana Belirsizlik</div>
-      <div id="healthRisk" class="value">Koku</div>
-      <small>COA / Allergen istenebilir</small>
-    </div>
-
-    <div class="card">
-      <div class="label">Sonraki Adım</div>
-      <div id="healthNextStep" class="value">Sor</div>
-      <small>Yeterli belge listesi doğrulanacak</small>
-    </div>
-  </div>
-
-  <div id="healthNote" style="
-    margin-top:16px;
-    padding:16px;
-    border-radius:18px;
-    background:rgba(201,168,104,.12);
-    border:1px solid rgba(201,168,104,.22);
-    color:#f4efe6;
-    line-height:1.6;
-    font-size:14px;
-  ">
-    Sağlık Bakanlığına sorulacak: IFRA, SDS/MSDS, SGS kimyasal test raporları, Air/Sea Transport ve Dangerous Goods raporları araç içi koku sistemi başvurusu için yeterli mi? Ek olarak COA, Allergen Declaration, REACH veya SVHC istenir mi?
-  </div>
-</div>  
-
-    <div class="card">
-      <div class="label">Sarı Alan</div>
-      <div id="warYellow" class="value">-</div>
-      <small>Dikkat gereken alan</small>
-    </div>
-
-    <div class="card">
-      <div class="label">Yeşil Alan</div>
-      <div id="warGreen" class="value">-</div>
-      <small>Çalışan sistem</small>
-    </div>
-  </div>
-
-  <div id="warRoomNote" style="
-    margin-top:16px;
-    padding:16px;
-    border-radius:18px;
-    background:rgba(0,0,0,.18);
-    border:1px solid rgba(255,255,255,.08);
-    color:#f4efe6;
-    line-height:1.6;
-    font-size:14px;
-  ">
-    Operasyon haritası bekleniyor...
-  </div>
-</div>
-
-    <div class="card">
-      <div class="label">Koku Belgeleri</div>
-      <div class="value">Orta</div>
-      <small>IFRA, SDS, SGS, taşıma raporları mevcut</small>
-    </div>
-
-    <div class="card">
-      <div class="label">Sağlık Bakanlığı</div>
-      <div class="value">Sorulacak</div>
-      <small>COA / Allergen gerekebilir</small>
-    </div>
   
-    <div class="card">
-      <div class="label">Gümrük Hazırlığı</div>
-      <div class="value">İyi</div>
-      <small>Air, Sea, Dangerous Goods raporları mevcut</small>
-    </div>
-  </div>
-
-
-  <div id="complianceNote" style="
-    margin-top:16px;
-    padding:16px;
-    border-radius:18px;
-    background:rgba(201,168,104,.12);
-    border:1px solid rgba(201,168,104,.22);
-    color:#f4efe6;
-    line-height:1.6;
-    font-size:14px;
-  ">
-    Mevcut dosya küçük/orta ölçekli ithalat hazırlığı için güçlü görünüyor. Sağlık Bakanlığı tarafında COA, Allergen Declaration, REACH veya SVHC istenip istenmediği netleştirilecek.
-  </div>
-</div>
 
   <div class="section">
   <h2>Compliance & Import Readiness</h2>
@@ -1114,6 +667,37 @@ a{
   <div class="card"><div class="label">Drop-off</div><div id="dropOff" class="value">0</div></div>
 </div>
 
+  <div class="section">
+  <h2>Customer / Order Intelligence</h2>
+  <p class="small">WhatsApp veya Instagram konuşmasını buraya yapıştır. Sistem müşteri kartı oluşturacak.</p>
+
+  <textarea id="customerRawInput" class="customerTextarea" placeholder="Müşteri konuşmasını buraya yapıştır..."></textarea>
+
+  <div class="customerActions">
+    <button onclick="analyzeCustomerText()">Müşteri Kartı Oluştur</button>
+    <button onclick="clearCustomerInput()">Temizle</button>
+  </div>
+
+  <div class="grid" style="margin-top:16px">
+    <div class="card">
+      <div class="label">Toplam Müşteri Kaydı</div>
+      <div id="customerTotal" class="value">0</div>
+      <small>Manuel kayıtlar</small>
+    </div>
+    <div class="card">
+      <div class="label">Sıcak Aday</div>
+      <div id="hotLeadTotal" class="value">0</div>
+      <small>Satın alma niyeti yüksek</small>
+    </div>
+    <div class="card">
+      <div class="label">Siparişe Dönen</div>
+      <div id="orderLeadTotal" class="value">0</div>
+      <small>Sipariş sinyali</small>
+    </div>
+  </div>
+
+  <div id="customerList" class="customerList"></div>
+</div>
   <div class="section">
   <h2>VAERO Funnel</h2>
     <div id="trafficQuality" style="
@@ -1793,12 +1377,111 @@ getPeakHour("sale"),
     labels.length ? "Satış trendi gerçek veriye göre hesaplanıyor." : "Henüz satış verisi yok.";
 }
 
+  let customerMemory = [];
+
+function clearCustomerInput(){
+  document.getElementById("customerRawInput").value = "";
+}
+
+function analyzeCustomerText(){
+
+  const raw =
+    document.getElementById("customerRawInput").value.trim();
+
+  if(!raw) return;
+
+  const lower = raw.toLowerCase();
+
+  let stage = "İlk Temas";
+  let interest = "Belirsiz";
+  let city = "Bilinmiyor";
+
+  if(
+    lower.includes("almak istiyorum") ||
+    lower.includes("1 adet") ||
+    lower.includes("sipariş")
+  ){
+    stage = "Sipariş Sinyali";
+  }
+
+  if(
+    lower.includes("white tea")
+  ){
+    interest = "White Tea";
+  }
+  else if(
+    lower.includes("ocean")
+  ){
+    interest = "Ocean";
+  }
+  else if(
+    lower.includes("sweet flower")
+  ){
+    interest = "Sweet Flower";
+  }
+  else if(
+    lower.includes("cologne")
+  ){
+    interest = "Cologne";
+  }
+
+  if(lower.includes("girne")) city = "Girne";
+  if(lower.includes("iskele")) city = "İskele";
+  if(lower.includes("lefkoşa")) city = "Lefkoşa";
+  if(lower.includes("mağusa")) city = "Mağusa";
+
+  customerMemory.unshift({
+    stage,
+    interest,
+    city,
+    raw
+  });
+
+  renderCustomerMemory();
+}
+
+  function renderCustomerMemory(){
+
+  const list = document.getElementById("customerList");
+  if(!list) return;
+
+  document.getElementById("customerTotal").innerText = customerMemory.length;
+
+  const hotLeads = customerMemory.filter(c =>
+    c.stage === "Sipariş Sinyali" ||
+    c.raw.toLowerCase().includes("fiyat") ||
+    c.raw.toLowerCase().includes("teslimat")
+  ).length;
+
+  const orders = customerMemory.filter(c =>
+    c.stage === "Sipariş Sinyali"
+  ).length;
+
+  document.getElementById("hotLeadTotal").innerText = hotLeads;
+  document.getElementById("orderLeadTotal").innerText = orders;
+
+  if(customerMemory.length === 0){
+    list.innerHTML = "<div class='small'>Henüz müşteri kaydı yok.</div>";
+    return;
+  }
+
+  list.innerHTML = customerMemory.map((c,index)=>`
+    <div class="customerItem">
+      <b>VAERO Lead #${customerMemory.length - index}</b>
+      <span>Durum: ${c.stage}</span>
+      <span>İlgi: ${c.interest}</span>
+      <span>Bölge: ${c.city}</span>
+      <span>Ham konuşma: ${c.raw.slice(0,120)}${c.raw.length > 120 ? "..." : ""}</span>
+    </div>
+  `).join("");
+}
 document.addEventListener("DOMContentLoaded",function(){
   setupClicks();
   loadData();
   setInterval(loadData,30000);
   renderContentAnalysis();
   renderMemoryTimeline();
+  renderCustomerMemory();
 });
   function renderLastEvents(events) {
   const container = document.getElementById("eventList");
