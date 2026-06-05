@@ -1467,13 +1467,31 @@ function analyzeCustomerText(){
 
   list.innerHTML = customerMemory.map((c,index)=>`
     <div class="customerItem">
-      <b>VAERO Lead #${customerMemory.length - index}</b>
+  <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+    <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+  <b>VAERO Lead #${customerMemory.length - index}</b>
+  <button onclick="deleteCustomer(${index})" style="border:none;background:rgba(255,255,255,.10);color:#fff;border-radius:10px;padding:6px 9px;cursor:pointer;">Sil</button>
+</div>
+    <button onclick="deleteCustomer(${index})" style="
+      border:none;
+      background:rgba(255,255,255,.10);
+      color:#fff;
+      border-radius:10px;
+      padding:6px 9px;
+      cursor:pointer;
+    ">Sil</button>
+  </div>
       <span>Durum: ${c.stage}</span>
       <span>İlgi: ${c.interest}</span>
       <span>Bölge: ${c.city}</span>
       <span>Ham konuşma: ${c.raw.slice(0,120)}${c.raw.length > 120 ? "..." : ""}</span>
     </div>
   `).join("");
+}
+
+  function deleteCustomer(index){
+  customerMemory.splice(index,1);
+  renderCustomerMemory();
 }
 document.addEventListener("DOMContentLoaded",function(){
   setupClicks();
