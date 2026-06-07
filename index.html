@@ -1343,12 +1343,7 @@ function setupClicks(){
         getPeakHour("sale"),
         "Satış trendi gösteriliyor."
       );
-      const grouped = groupByDay(
-  allEvents.filter(e =>
-  ["sale","purchase","order"].includes(e.event_name)
-)
-  "sale"
-);.
+      const grouped = groupByDay(allEvents,"sale");
 const labels = Object.keys(grouped);
 const values = Object.values(grouped);
 
