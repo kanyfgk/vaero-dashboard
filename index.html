@@ -933,7 +933,13 @@ let currentChart = null;
 ];
 
 function $(id){
-  return document.getElementById(id);
+  return document.getElementById(id) || {
+    innerText:"",
+    innerHTML:"",
+    value:"",
+    style:{},
+    onclick:null
+  };
 }
 
 function clearChart(){
