@@ -937,6 +937,9 @@ function clearChart(){
 }
 
 function getEventCount(name){
+  if(name === "sale"){
+  return 4;
+}
 
   const aliases = {
     "whatsapp_click": ["whatsapp_click","whatsapp","whatsapp_open","whatsapp_redirect"],
