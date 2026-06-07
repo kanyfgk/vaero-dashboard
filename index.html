@@ -476,42 +476,6 @@ a{
 
   <div class="grid">
     <div class="card">
-      <span>Bugün</span>
-      <b id="detailToday">0</b>
-    </div>
-
-    <div class="card">
-      <span>Bu Hafta</span>
-      <b id="detailWeek">0</b>
-    </div>
-
-    <div class="card">
-      <span>Geçen Hafta</span>
-      <b id="detailLastWeek">0</b>
-    </div>
-
-    <div class="card">
-      <span>En Aktif Saat</span>
-      <b id="detailPeakHour">-</b>
-    </div>
-  </div>
-
-  <p id="detailContent" style="margin-top:15px;color:#c9d6ff"></p>
-  <p id="conversionInfo" style="margin-top:10px;color:#c9d6ff"></p>
-
-  <canvas id="mainChart" style="margin-top:20px;max-height:320px"></canvas>
-
-  <div class="device-panel" style="margin-top:20px">
-    <h4>Cihaz Dağılımı</h4>
-    <div id="deviceStats">Veri bekleniyor...</div>
-  </div>
-</div>
-
-  <div id="detailPanel" class="section" style="display:none;margin-bottom:20px">
-  <h2 id="detailTitle">Detay Paneli</h2>
-
-  <div class="grid">
-    <div class="card">
       <div class="label">Bugün</div>
       <div id="detailToday" class="value">0</div>
     </div>
@@ -1306,56 +1270,77 @@ function getPeakHour(eventName){
 }
 
 function setupClicks(){
-  const safeClick = (id, fn) => {
-    const el = $(id);
-    if(el) el.onclick = fn;
+  const names = {
+    page_view: ["page_view","visit","visitor","Ziyaret"],
+    whatsapp_click: ["whatsapp_click","whatsapp","whatsapp_open","whatsapp_redirect"],
+    sale: ["sale","purchase"],
+    tracking_submit: ["tracking_submit","tracking"]
   };
 
-  safeClick("cardVisitors", function(){
-    const grouped = groupByDay(allEvents,"page_view");
-    const labels = Object.keys(grouped);
-    const values = Object.values(grouped);
+  const matchEvents = (key) => {
+    return allEvents.filter(e => {
+      const n = e.name || e.event || e.type || "";
+      return names[key].includes(n);
+    });
+  };
 
-    openDetail("Ziyaretçi Analizi", getTodayCount("page_view"), getWeekCount("page_view"), getLastWeekCount("page_view"), getPeakHour("page_view"), labels.length ? "Gerçek ziyaretçi verisi gösteriliyor." : "Henüz ziyaretçi verisi yok.");
+  const groupMatchedByDay = (key) => {
+    const grouped = {};
+    matchEvents(key).forEach(e=>{
+      const d = new Date(e.created_at || e.time || e.timestamp);
+      if(isNaN(d)) return;
+      const day = d.toISOString().slice(0,10);
+      grouped[day] = (grouped[day] || 0) + 1;
+    });
+    return grouped;
+  };
 
-    drawLineChart(labels.length ? labels : ["Veri yok"], [{
-      label:"Ziyaretçi",
-      data: values.length ? values : [0],
-      tension:0.4
-    }]);
-  });
+  const bind = (id, key, title, label) => {
+    const el = $(id);
+    if(!el) return;
 
-  safeClick("cardWhatsapp", function(){
-    const grouped = groupByDay(allEvents,"whatsapp_click");
-    const labels = Object.keys(grouped);
-    const values = Object.values(grouped);
+    el.onclick = function(){
+      const grouped = groupMatchedByDay(key);
+      const labels = Object.keys(grouped);
+      const values = Object.values(grouped);
 
-    openDetail("WhatsApp Geçiş Analizi", getTodayCount("whatsapp_click"), getWeekCount("whatsapp_click"), getLastWeekCount("whatsapp_click"), getPeakHour("whatsapp_click"), labels.length ? "Gerçek WhatsApp geçişleri gösteriliyor." : "Henüz WhatsApp verisi yok.");
+      openDetail(
+        title,
+        getTodayCount(key),
+        getWeekCount(key),
+        getLastWeekCount(key),
+        getPeakHour(key),
+        labels.length ? "Gerçek veri gösteriliyor." : "Henüz veri yok."
+      );
 
-    drawLineChart(labels.length ? labels : ["Veri yok"], [{
-      label:"WhatsApp",
-      data: values.length ? values : [0],
-      tension:0.4
-    }]);
-  });
+      setTimeout(()=>{
+        drawLineChart(labels.length ? labels : ["Veri yok"], [{
+          label: label,
+          data: values.length ? values : [0],
+          tension:0.4
+        }]);
+      },100);
+    };
+  };
 
-  safeClick("cardSales", function(){
-    drawSalesTrend();
-  });
+  bind("cardVisitors","page_view","Ziyaretçi Analizi","Ziyaretçi");
+  bind("cardWhatsapp","whatsapp_click","WhatsApp Geçiş Analizi","WhatsApp");
+  bind("cardTrack","tracking_submit","Kargo Takip Analizi","Kargo Takip");
 
-  safeClick("cardTrack", function(){
-    const grouped = groupByDay(allEvents,"tracking_submit");
-    const labels = Object.keys(grouped);
-    const values = Object.values(grouped);
-
-    openDetail("Kargo Takip Analizi", getTodayCount("tracking_submit"), getWeekCount("tracking_submit"), getLastWeekCount("tracking_submit"), getPeakHour("tracking_submit"), labels.length ? "Gerçek kargo takip kullanımı gösteriliyor." : "Henüz kargo takip verisi yok.");
-
-    drawLineChart(labels.length ? labels : ["Veri yok"], [{
-      label:"Kargo Takip",
-      data: values.length ? values : [0],
-      tension:0.4
-    }]);
-  });
+  const salesCard = $("cardSales");
+  if(salesCard){
+    salesCard.onclick = function(){
+      openDetail(
+        "Genel Satış Trend Grafiği",
+        getTodayCount("sale"),
+        getWeekCount("sale"),
+        getLastWeekCount("sale"),
+        getPeakHour("sale"),
+        "Satış trendi gösteriliyor."
+      );
+      setTimeout(()=>drawSalesTrend(),100);
+    };
+  }
 }
 
 function drawSalesTrend(){
