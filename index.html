@@ -551,6 +551,18 @@ a{
 <div class="buttons">
   <a href="https://project-dn5qk.vercel.app" target="_blank">Track Sayfasını Aç</a>
   <a href="#" target="_blank">Satış Sayfası Linki</a>
+  <button onclick="manualSale()" style="
+padding:10px 16px;
+border:none;
+border-radius:10px;
+background:#c5a468;
+color:#111;
+font-weight:700;
+cursor:pointer;
+margin-left:10px;
+">
++ Satış Ekle
+</button>
 </div>
 
   <div class="section pulseBox">
@@ -2406,6 +2418,8 @@ box.innerText =
     }
 
     allEvents = data;
+    updateSalesRevenue();
+updateFunnel();
     console.log(
   "DOĞRU SAYIM:",
   "page_view:", getEventCount("page_view"),
