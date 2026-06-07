@@ -476,6 +476,42 @@ a{
 
   <div class="grid">
     <div class="card">
+      <span>Bugün</span>
+      <b id="detailToday">0</b>
+    </div>
+
+    <div class="card">
+      <span>Bu Hafta</span>
+      <b id="detailWeek">0</b>
+    </div>
+
+    <div class="card">
+      <span>Geçen Hafta</span>
+      <b id="detailLastWeek">0</b>
+    </div>
+
+    <div class="card">
+      <span>En Aktif Saat</span>
+      <b id="detailPeakHour">-</b>
+    </div>
+  </div>
+
+  <p id="detailContent" style="margin-top:15px;color:#c9d6ff"></p>
+  <p id="conversionInfo" style="margin-top:10px;color:#c9d6ff"></p>
+
+  <canvas id="mainChart" style="margin-top:20px;max-height:320px"></canvas>
+
+  <div class="device-panel" style="margin-top:20px">
+    <h4>Cihaz Dağılımı</h4>
+    <div id="deviceStats">Veri bekleniyor...</div>
+  </div>
+</div>
+
+  <div id="detailPanel" class="section" style="display:none;margin-bottom:20px">
+  <h2 id="detailTitle">Detay Paneli</h2>
+
+  <div class="grid">
+    <div class="card">
       <div class="label">Bugün</div>
       <div id="detailToday" class="value">0</div>
     </div>
