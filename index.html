@@ -933,7 +933,9 @@ function clearChart(){
 
 function getEventCount(name){
   if(name === "sale"){
-  return 4;
+  return allEvents.filter(e =>
+    ["sale","purchase","order"].includes(e.name)
+  ).length;
 }
 
   const aliases = {
@@ -1341,7 +1343,20 @@ function setupClicks(){
         getPeakHour("sale"),
         "Satış trendi gösteriliyor."
       );
-      setTimeout(()=>drawSalesTrend(),100);
+      const grouped = groupByDay(
+  allEvents.filter(e =>
+  ["sale","purchase","order"].includes(e.event_name)
+)
+  "sale"
+);.
+const labels = Object.keys(grouped);
+const values = Object.values(grouped);
+
+drawLineChart(labels.length ? labels : ["Veri yok"], [{
+  label:"Satış",
+  data: values.length ? values : [0],
+  tension:0.4
+}]);
     };
   }
 }
