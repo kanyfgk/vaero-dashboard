@@ -1052,6 +1052,10 @@ if(title === "Kargo Takip Analizi"){
 
   const box = $("deviceStats");
 
+if(!box){
+  return;
+} 
+
   const devices = {
     mobile: 0,
     tablet: 0,
