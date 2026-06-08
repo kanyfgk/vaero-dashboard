@@ -445,6 +445,29 @@ a{
 </head>
 
 <body>
+  <section class="section" id="commandCenter">
+  <h2>🧠 VAERO COMMAND CENTER</h2>
+
+  <div class="grid">
+    <div class="card">
+      <span>Bugünkü Karar</span>
+      <b id="commandDecision">Analiz bekleniyor</b>
+      <small>AI operasyon yönü</small>
+    </div>
+
+    <div class="card">
+      <span>Durum</span>
+      <b id="commandStatus">Bekleniyor</b>
+      <small>Trafik → WhatsApp → Satış</small>
+    </div>
+
+    <div class="card">
+      <span>Bugünkü Aksiyon</span>
+      <b id="commandAction">Bekleniyor</b>
+      <small>Öncelikli hamle</small>
+    </div>
+  </div>
+</section>
 <section class="section">
   <h2>🚀 OPERASYON MERKEZİ</h2>
   <div class="grid">
@@ -1172,6 +1195,9 @@ if($("adPressure")){
   }else{
     $("adPressure").innerText = "Düşük";
   }
+  if($("commandDecision")) $("commandDecision").innerText = $("ai-status") ? $("ai-status").innerText : "Analiz bekleniyor";
+if($("commandStatus")) $("commandStatus").innerText = whatsapp > 0 && sales === 0 ? "Kapanış eksik" : "Takipte";
+if($("commandAction")) $("commandAction").innerText = sales === 0 ? "WhatsApp kapanışını güçlendir" : "Satışı ölçekle";
 }
 
 if($("revenueInsight")){
@@ -1652,6 +1678,9 @@ document.addEventListener("DOMContentLoaded",function(){
   const whatsapp = getEventCount("whatsapp_click");
   const sales = getEventCount("sale");
   const tracking = getEventCount("tracking_submit");
+    if($("commandWhatsapp")) $("commandWhatsapp").innerText = whatsapp;
+if($("commandSales")) $("commandSales").innerText = sales;
+if($("commandTracking")) $("commandTracking").innerText = tracking;
 
   if($("pipelineLeads")) $("pipelineLeads").innerText = whatsapp;
 
