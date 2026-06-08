@@ -470,6 +470,25 @@ a{
 </section>
 <section class="section">
   <h2>🚀 OPERASYON MERKEZİ</h2>
+  <div class="grid" style="margin-top:16px;">
+  <div class="card">
+    <span>WhatsApp Gücü</span>
+    <b id="whatsappPower">0</b>
+    <small>İlgi seviyesi</small>
+  </div>
+
+  <div class="card">
+    <span>Satış Gücü</span>
+    <b id="salesPower">0</b>
+    <small>Kapanış seviyesi</small>
+  </div>
+
+  <div class="card">
+    <span>Güven Gücü</span>
+    <b id="trustPower">0</b>
+    <small>Takip ve güven sinyali</small>
+  </div>
+</div>
   <div class="grid">
     <div class="card" id="cardVisitors">
   <span>Ziyaretçi</span>
@@ -1198,6 +1217,9 @@ if($("adPressure")){
   if($("commandDecision")) $("commandDecision").innerText = $("ai-status") ? $("ai-status").innerText : "Analiz bekleniyor";
 if($("commandStatus")) $("commandStatus").innerText = whatsapp > 0 && sales === 0 ? "Kapanış eksik" : "Takipte";
 if($("commandAction")) $("commandAction").innerText = sales === 0 ? "WhatsApp kapanışını güçlendir" : "Satışı ölçekle";
+  if($("whatsappPower")) $("whatsappPower").innerText = whatsapp;
+if($("salesPower")) $("salesPower").innerText = sales;
+if($("trustPower")) $("trustPower").innerText = tracking;
 }
 
 if($("revenueInsight")){
